@@ -1,0 +1,91 @@
+name: {{.TEMPLATE}}
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        GOVER: [ '1.18' ]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@7884fcad6b5d53d10323aee724dc68d8b9096a2e # pin@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Go-${{ matrix.GOVER }}
+        uses: actions/setup-go@bfdd3570ce990073878bf10f6b2d79082de49492 # pin@v2
+        with:
+          go-version: ${{ matrix.GOVER }}
+
+      # Linting
+      - name: Linting
+        uses: golangci/golangci-lint-action@5c56cd6c9dc07901af25baab6f2b0d9f3b7c3018 # pin@v2
+        with:
+          version: latest
+          args: --config=./.github/.golangci.yml ./...
+          only-new-issues: true
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@7884fcad6b5d53d10323aee724dc68d8b9096a2e # pin@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Go
+        uses: actions/setup-go@bfdd3570ce990073878bf10f6b2d79082de49492 # pin@v2
+        with:
+          go-version: '1.18'
+
+      # Test
+      - name: Run Tests
+        run: make test
+
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@7884fcad6b5d53d10323aee724dc68d8b9096a2e # pin@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Go
+        uses: actions/setup-go@bfdd3570ce990073878bf10f6b2d79082de49492 # pin@v2
+        with:
+          go-version: '1.18'
+
+      # Coverage
+      - name: Run coverage
+        run: make cover
+
+      # Codecov
+      - name: Codecov
+        uses: codecov/codecov-action@29386c70ef20e286228c72b668a06fd0e8399192 # pin@v1
+        with:
+          file: ./coverage.out
+
+      # Sonar
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@25b0be1ad1c39388799624b0d0914282bc36ac8e # pin@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=bytemare_template
+            -Dsonar.organization=bytemare-github
+            -Dsonar.sources=.
+            -Dsonar.go.coverage.reportPaths=.github/coverage.out
+            -Dsonar.test.exclusions=examples_test.go,tests/**
+            -Dsonar.tests=tests/
+            -Dsonar.verbose=true
