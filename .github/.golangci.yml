@@ -119,7 +119,7 @@ linters-settings:
   gofmt:
     simplify: true
   goimports:
-    local-prefixes: github.com/bytemare/{{.template}}
+    local-prefixes: github.com/bytemare/hash2curve
   gomnd:
     settings:
       mnd:

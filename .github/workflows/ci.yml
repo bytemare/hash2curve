@@ -1,4 +1,4 @@
-name: {{.TEMPLATE}}
+name: h2c
 on:
   pull_request:
     branches:
@@ -82,10 +82,10 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectKey=bytemare_template
+            -Dsonar.projectKey=bytemare_hash2curve
             -Dsonar.organization=bytemare-github
             -Dsonar.sources=.
             -Dsonar.go.coverage.reportPaths=.github/coverage.out
-            -Dsonar.test.exclusions=examples_test.go,tests/**
-            -Dsonar.tests=tests/
+            -Dsonar.test.exclusions=*_test.go
+            -Dsonar.tests=*_test.go
             -Dsonar.verbose=true
