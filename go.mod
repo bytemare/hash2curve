@@ -1,4 +1,4 @@
-module hash2curve
+module github.com/bytemare/hash2curve
 
 go 1.18
 
