@@ -87,5 +87,5 @@ jobs:
             -Dsonar.sources=.
             -Dsonar.go.coverage.reportPaths=.github/coverage.out
             -Dsonar.verbose=true
-            #-Dsonar.test.exclusions=*_test.go
-            #-Dsonar.tests=*_test.go
+          # -Dsonar.test.exclusions=*_test.go
+          # -Dsonar.tests=*_test.go
