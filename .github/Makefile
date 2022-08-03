@@ -23,7 +23,7 @@ fmt:
 .PHONY: license
 license:
 	@echo "Checking License headers ..."
-	@if addlicense -check -v -f .github/licence-header.tmpl *; then echo "License headers OK"; else return 1; fi;
+	@if addlicense -check -v -f licence-header.tmpl ../*; then echo "License headers OK"; else return 1; fi;
 
 .PHONY: lint
 lint: license
@@ -33,7 +33,7 @@ lint: license
 .PHONY: test
 test:
 	@echo "Running all tests ..."
-	@go test -v ../tests
+	@go test -v -vet=all ../...
 
 .PHONY: vectors
 vectors:
@@ -43,4 +43,4 @@ vectors:
 .PHONY: cover
 cover:
 	@echo "Testing with coverage ..."
-	@go test -v -race -covermode=atomic -coverpkg=../... -coverprofile=../coverage.out ../tests
+	@go test -v -race -covermode=atomic -coverpkg=../... -coverprofile=../coverage.out ../...

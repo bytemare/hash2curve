@@ -1,29 +1,30 @@
-# {{.TEMPLATE}}
-[![{{.template}}](https://github.com/bytemare/{{.template}}/actions/workflows/ci.yml/badge.svg)](https://github.com/bytemare/{{.template}}/actions/workflows/ci.yml)
-[![Go Reference](https://pkg.go.dev/badge/github.com/bytemare/{{.template}}.svg)](https://pkg.go.dev/github.com/bytemare/{{.template}})
-[![codecov](https://codecov.io/gh/bytemare/{{.template}}/branch/main/graph/badge.svg?token=5bQfB0OctA)](https://codecov.io/gh/bytemare/{{.template}})
+# Hash To Curve
+[![hash2curve](https://github.com/bytemare/hash2curve/actions/workflows/ci.yml/badge.svg)](https://github.com/bytemare/hash2curve/actions/workflows/ci.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/bytemare/hash2curve.svg)](https://pkg.go.dev/github.com/bytemare/hash2curve)
+[![codecov](https://codecov.io/gh/bytemare/hash2curve/branch/main/graph/badge.svg?token=5bQfB0OctA)](https://codecov.io/gh/bytemare/hash2curve)
 
 ```
-  import "github.com/bytemare/{{.template}}"
+  import "github.com/bytemare/hash2curve"
 ```
-{{Short description}}
 
-This package is continuously fuzzed on Fuzzbuzz.
+Package hash2curve provides hash-to-curve compatible hashing over arbitrary input.
+It implements the expanders and hashing to a field as specified in [hash-to-curve](https://datatracker.ietf.org/doc/draft-irtf-cfrg-hash-to-curve/).
 
-#### What is {{.template}}?
+#### What is hash2curve?
 
-> {{Short Philosophy about the concept we're implementing.}}
+> Hashing to curve allows representing arbitrary byte sequences as points on a curve (or elements in a group), therefore
+> benefiting from interesting mathematical properties very useful in cryptographic protocols, like CPace, VOPRF, and
+> OPAQUE.
 
 #### References
-- {{If you have any, put links that can help know more.}}
 
-## Documentation [![Go Reference](https://pkg.go.dev/badge/github.com/bytemare/{{.template}}.svg)](https://pkg.go.dev/github.com/bytemare/{{.template}})
+## Documentation [![Go Reference](https://pkg.go.dev/badge/github.com/bytemare/hash2curve.svg)](https://pkg.go.dev/github.com/bytemare/hash2curve)
 
-You can find the documentation and usage examples in [the package doc](https://pkg.go.dev/github.com/bytemare/{{.template}}) and [the project wiki](https://github.com/bytemare/{{.template}}/wiki) .
+You can find the documentation and usage examples in [the package doc](https://pkg.go.dev/github.com/bytemare/hash2curve) and [the project wiki](https://github.com/bytemare/hash2curve/wiki) .
 
 ## Versioning
 
-[SemVer](http://semver.org) is used for versioning. For the versions available, see the [tags on the repository](https://github.com/bytemare/{{.template}}/tags).
+[SemVer](http://semver.org) is used for versioning. For the versions available, see the [tags on the repository](https://github.com/bytemare/hash2curve/tags).
 
 
 ## Contributing
