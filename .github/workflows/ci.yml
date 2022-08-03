@@ -86,6 +86,6 @@ jobs:
             -Dsonar.organization=bytemare-github
             -Dsonar.sources=.
             -Dsonar.go.coverage.reportPaths=.github/coverage.out
-            -Dsonar.test.exclusions=*_test.go
-            -Dsonar.tests=*_test.go
             -Dsonar.verbose=true
+            #-Dsonar.test.exclusions=*_test.go
+            #-Dsonar.tests=*_test.go
