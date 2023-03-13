@@ -69,10 +69,10 @@ func TestExpander_XMDHighLength(t *testing.T) {
 
 type vector struct {
 	dstPrime     []byte
-	lenInBytes   int
 	msg          []byte
 	msgPrime     []byte
 	uniformBytes []byte
+	lenInBytes   int
 }
 
 type vectorStrings struct {
@@ -116,9 +116,9 @@ func (vs *vectorStrings) decode() (*vector, error) {
 type set struct {
 	DST   string          `json:"DST"`
 	Hash  string          `json:"hash"`
-	K     int             `json:"k"`
 	Name  string          `json:"name"`
 	Tests []vectorStrings `json:"tests"`
+	K     int             `json:"k"`
 }
 
 func mapHash(name string) hash.Identifier {
