@@ -105,5 +105,5 @@ func IsogenySecp256k13iso(x, y *big.Int) (px, py *big.Int, isIdentity bool) {
 	fp.Mul(py, py, &yNum)
 	fp.Mul(py, py, y)
 
-	return x, y, isIdentity
+	return px, py, isIdentity
 }
