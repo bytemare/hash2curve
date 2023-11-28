@@ -19,7 +19,7 @@ import (
 
 var errLengthTooLarge = errors.New("requested byte length is too high")
 
-// expandXMD implements https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-hash-to-curve#section-5.4.1.
+// expandXMD implements expand_message_xmd as specified in RFC 9380 section 5.3.1.
 func expandXMD(id crypto.Hash, input, dst []byte, length int) []byte {
 	h := id.New()
 	dst = vetDSTXMD(h, dst)

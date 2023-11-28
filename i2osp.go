@@ -21,7 +21,7 @@ var (
 	errLengthTooBig   = errors.New("requested length is > 4")
 )
 
-// i2osp 32 bit Integer to Octet Stream Primitive on maximum 4 bytes.
+// i2osp 32-bit Integer to Octet Stream Primitive on maximum 4 bytes.
 func i2osp(value, length int) []byte {
 	if length <= 0 {
 		panic(errLengthNegative)
