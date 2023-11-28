@@ -7,14 +7,14 @@
   import "github.com/bytemare/hash2curve"
 ```
 
-Package hash2curve provides hash-to-curve compatible hashing over arbitrary input.
-It implements the expanders and hashing to a field as specified in [hash-to-curve](https://datatracker.ietf.org/doc/draft-irtf-cfrg-hash-to-curve/).
+Package hash2curve implements Hashing to Elliptic Curves as specified in RFC
+It implements the expanders and hashing to a field as specified in [RFC 9380](https://datatracker.ietf.org/doc/rfc9380).
 
 #### What is hash2curve?
 
-> Hashing to curve allows representing arbitrary byte sequences as points on a curve (or elements in a group), therefore
-> benefiting from interesting mathematical properties very useful in cryptographic protocols, like CPace, VOPRF, and
-> OPAQUE.
+> Hashing to Elliptic Curves allows for encoding or hashing an arbitrary string to a point on an elliptic curve
+> (or element in a group), therefore benefiting from interesting mathematical properties very useful in cryptographic
+> protocols, like CPace, VOPRF, and OPAQUE.
 
 #### References
 

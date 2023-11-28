@@ -41,11 +41,6 @@ test:
 	@echo "Running all tests ..."
 	@go test -v -vet=all ../...
 
-.PHONY: vectors
-vectors:
-	@echo "Testing vectors ..."
-	@go test -v ../tests/vectors_test.go
-
 .PHONY: cover
 cover:
 	@echo "Testing with coverage ..."

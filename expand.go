@@ -26,8 +26,6 @@ const (
 
 var errZeroLenDST = errors.New("zero-length DST")
 
-// errShortDST = internal.ParameterError("DST is shorter than recommended length")
-
 func checkDST(dst []byte) {
 	if len(dst) < recommendedMinLength {
 		if len(dst) == minLength {

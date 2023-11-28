@@ -18,7 +18,7 @@ import (
 
 var errXOFHighOutput = errors.New("XOF dst hashing is too long")
 
-// expandMessage XOF implements https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-hash-to-curve#section-5.4.2.
+// expandMessage XOF implements expand_message_xof as specified in RFC 9380 section 5.3.2.
 func expandXOF(x hash.Extendable, input, dst []byte, length int) []byte {
 	if length > math.MaxUint16 {
 		panic(errLengthTooLarge)

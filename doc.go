@@ -6,8 +6,5 @@
 // LICENSE file in the root directory of this source tree or at
 // https://spdx.org/licenses/MIT.html
 
-// Package hash2curve provides hash-to-curve compatible hashing over arbitrary input.
-//
-// It implements the latest hash-to-curve specification to date
-// (https://datatracker.ietf.org/doc/draft-irtf-cfrg-hash-to-curve/).
+// Package hash2curve Hashing to Elliptic Curves as specified in RFC 9380 (https://datatracker.ietf.org/doc/rfc9380).
 package hash2curve
