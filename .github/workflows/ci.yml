@@ -70,6 +70,8 @@ jobs:
       # Codecov
       - name: Codecov
         uses: codecov/codecov-action@29386c70ef20e286228c72b668a06fd0e8399192 # pin@master
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
           file: .github/coverage.out
 

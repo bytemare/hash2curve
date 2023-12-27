@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 //
-// Copyright (C) 2021-2023 Daniel Bourdrez. All Rights Reserved.
+// Copyright (C) 2024 Daniel Bourdrez. All Rights Reserved.
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree or at
 // https://spdx.org/licenses/MIT.html
 
-// Package hash2curve provides hash-to-curve compatible input expansion.
-package hash2curve
+package hash2curve_test
 
 import (
 	"bytes"
@@ -15,6 +14,8 @@ import (
 	"errors"
 	"fmt"
 	"testing"
+
+	"github.com/bytemare/hash2curve/internal"
 )
 
 var (
@@ -60,13 +61,13 @@ func expectPanic(expectedError error, f func()) (bool, error) {
 	return true, nil
 }
 
-type i2ospTest struct {
+type I2ospTest struct {
 	encoded []byte
 	value   int
 	size    int
 }
 
-var I2OSPVectors = []i2ospTest{
+var I2OSPVectors = []I2ospTest{
 	{
 		[]byte{0}, 0, 1,
 	},
@@ -93,7 +94,7 @@ var I2OSPVectors = []i2ospTest{
 func TestI2osp(t *testing.T) {
 	for i, v := range I2OSPVectors {
 		t.Run(fmt.Sprintf("%d - %d - %v", v.value, v.size, v.encoded), func(t *testing.T) {
-			r := i2osp(v.value, v.size)
+			r := internal.I2osp(v.value, v.size)
 
 			if !bytes.Equal(r, v.encoded) {
 				t.Fatalf(
@@ -108,28 +109,28 @@ func TestI2osp(t *testing.T) {
 
 	length := -1
 	if hasPanic, err := expectPanic(nil, func() {
-		_ = i2osp(1, length)
+		_ = internal.I2osp(1, length)
 	}); !hasPanic {
 		t.Fatalf("expected panic with with negative length: %v", err)
 	}
 
 	length = 0
 	if hasPanic, err := expectPanic(nil, func() {
-		_ = i2osp(1, length)
+		_ = internal.I2osp(1, length)
 	}); !hasPanic {
 		t.Fatalf("expected panic with with 0 length: %v", err)
 	}
 
 	length = 5
 	if hasPanic, err := expectPanic(nil, func() {
-		_ = i2osp(1, length)
+		_ = internal.I2osp(1, length)
 	}); !hasPanic {
 		t.Fatalf("expected panic with length too big: %v", err)
 	}
 
 	negative := -1
 	if hasPanic, err := expectPanic(nil, func() {
-		_ = i2osp(negative, 4)
+		_ = internal.I2osp(negative, 4)
 	}); !hasPanic {
 		t.Fatalf("expected panic with negative input: %v", err)
 	}
@@ -137,7 +138,7 @@ func TestI2osp(t *testing.T) {
 	tooLarge := 1 << 32
 	length = 1
 	if hasPanic, err := expectPanic(nil, func() {
-		_ = i2osp(tooLarge, length)
+		_ = internal.I2osp(tooLarge, length)
 	}); !hasPanic {
 		t.Fatalf("expected panic with exceeding value for the length: %v", err)
 	}
@@ -150,7 +151,7 @@ func TestI2osp(t *testing.T) {
 	}
 
 	for k, v := range lengths {
-		r := i2osp(k, v)
+		r := internal.I2osp(k, v)
 
 		if len(r) != v {
 			t.Fatalf("invalid length for %d. Expected '%d', got '%d' (%v)", k, v, len(r), r)

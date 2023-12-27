@@ -7,8 +7,7 @@
   import "github.com/bytemare/hash2curve"
 ```
 
-Package hash2curve implements Hashing to Elliptic Curves as specified in RFC
-It implements the expanders and hashing to a field as specified in [RFC 9380](https://datatracker.ietf.org/doc/rfc9380).
+Package hash2curve implements Hashing to Elliptic Curves as specified in [RFC 9380](https://datatracker.ietf.org/doc/rfc9380).
 
 #### What is hash2curve?
 
