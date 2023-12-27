@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 //
-// Copyright (C) 2021-2023 Daniel Bourdrez. All Rights Reserved.
+// Copyright (C) 2024 Daniel Bourdrez. All Rights Reserved.
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree or at
@@ -18,7 +18,12 @@ import (
 
 // HashToFieldXOF hashes the input with the domain separation tag (dst) to an integer under modulo, using an
 // extensible output function (e.g. SHAKE).
-func HashToFieldXOF(id hash.Extendable, input, dst []byte, count, ext, securityLength int, modulo *big.Int) []*big.Int {
+func HashToFieldXOF(
+	id *hash.ExtendableHash,
+	input, dst []byte,
+	count, ext, securityLength int,
+	modulo *big.Int,
+) []*big.Int {
 	expLength := count * ext * securityLength // elements * ext * security length
 	uniform := ExpandXOF(id, input, dst, expLength)
 

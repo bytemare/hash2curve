@@ -1,17 +1,21 @@
 // SPDX-License-Identifier: MIT
 //
-// Copyright (C) 2021-2023 Daniel Bourdrez. All Rights Reserved.
+// Copyright (C) 2024 Daniel Bourdrez. All Rights Reserved.
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree or at
 // https://spdx.org/licenses/MIT.html
 
-// Package hash2curve provides hash-to-curve compatible input expansion.
-package hash2curve
+package internal
 
 import (
 	"encoding/binary"
 	"errors"
+)
+
+const (
+	dstMaxLength  = 255
+	dstLongPrefix = "H2C-OVERSIZE-DST-"
 )
 
 var (
@@ -21,8 +25,8 @@ var (
 	errLengthTooBig   = errors.New("requested length is > 4")
 )
 
-// i2osp 32-bit Integer to Octet Stream Primitive on maximum 4 bytes.
-func i2osp(value, length int) []byte {
+// I2osp 32-bit Integer to Octet Stream Primitive on maximum 4 bytes.
+func I2osp(value, length int) []byte {
 	if length <= 0 {
 		panic(errLengthNegative)
 	}

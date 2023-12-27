@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 //
-// Copyright (C) 2021-2023 Daniel Bourdrez. All Rights Reserved.
+// Copyright (C) 2024 Daniel Bourdrez. All Rights Reserved.
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree or at
 // https://spdx.org/licenses/MIT.html
 
-// Package hash2curve provides hash-to-curve compatible input expansion.
-package hash2curve
+package internal
 
 import (
 	"crypto"
@@ -19,10 +18,10 @@ import (
 
 var errLengthTooLarge = errors.New("requested byte length is too high")
 
-// expandXMD implements expand_message_xmd as specified in RFC 9380 section 5.3.1.
-func expandXMD(id crypto.Hash, input, dst []byte, length int) []byte {
+// ExpandXMD implements expand_message_xmd as specified in RFC 9380 section 5.3.1.
+func ExpandXMD(id crypto.Hash, input, dst []byte, length int) []byte {
 	h := id.New()
-	dst = vetDSTXMD(h, dst)
+	dst = VetDSTXMD(h, dst)
 	b := id.Size()
 	blockSize := h.BlockSize()
 
@@ -32,9 +31,9 @@ func expandXMD(id crypto.Hash, input, dst []byte, length int) []byte {
 	}
 
 	zPad := make([]byte, blockSize)
-	lib := i2osp(length, 2)
+	lib := I2osp(length, 2)
 	zeroByte := []byte{0}
-	dstPrime := dstPrime(dst)
+	dstPrime := DstPrime(dst)
 
 	// Hash to b0
 	b0 := _hash(h, zPad, input, lib, zeroByte, dstPrime)
@@ -51,8 +50,9 @@ func expandXMD(id crypto.Hash, input, dst []byte, length int) []byte {
 	return xmd(h, b0, b1, dstPrime, uint(ell), length)
 }
 
-func dstPrime(dst []byte) []byte {
-	return append(dst, i2osp(len(dst), 1)[0])
+// DstPrime length-suffix-encodes dst.
+func DstPrime(dst []byte) []byte {
+	return append(dst, I2osp(len(dst), 1)[0])
 }
 
 // xmd expands the message digest until it reaches the desirable length.
@@ -81,7 +81,8 @@ func xorSlices(bi, b0 []byte) []byte {
 	return bi
 }
 
-func vetDSTXMD(h hash.Hash, dst []byte) []byte {
+// VetDSTXMD computes a shorter tag for dst if the tag length exceeds 255 bytes.
+func VetDSTXMD(h hash.Hash, dst []byte) []byte {
 	if len(dst) <= dstMaxLength {
 		return dst
 	}

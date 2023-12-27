@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 //
-// Copyright (C) 2021-2023 Daniel Bourdrez. All Rights Reserved.
+// Copyright (C) 2024 Daniel Bourdrez. All Rights Reserved.
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree or at
@@ -14,12 +14,11 @@ import (
 	"errors"
 
 	"github.com/bytemare/hash"
+
+	"github.com/bytemare/hash2curve/internal"
 )
 
 const (
-	dstMaxLength  = 255
-	dstLongPrefix = "H2C-OVERSIZE-DST-"
-
 	minLength            = 0
 	recommendedMinLength = 16
 )
@@ -37,11 +36,11 @@ func checkDST(dst []byte) {
 // ExpandXMD expands the input and dst using the given fixed length hash function.
 func ExpandXMD(id crypto.Hash, input, dst []byte, length int) []byte {
 	checkDST(dst)
-	return expandXMD(id, input, dst, length)
+	return internal.ExpandXMD(id, input, dst, length)
 }
 
 // ExpandXOF expands the input and dst using the given extendable output hash function.
-func ExpandXOF(id hash.Extendable, input, dst []byte, length int) []byte {
+func ExpandXOF(ext *hash.ExtendableHash, input, dst []byte, length int) []byte {
 	checkDST(dst)
-	return expandXOF(id, input, dst, length)
+	return internal.ExpandXOF(ext, input, dst, length)
 }

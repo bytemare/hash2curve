@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 //
-// Copyright (C) 2021-2023 Daniel Bourdrez. All Rights Reserved.
+// Copyright (C) 2024 Daniel Bourdrez. All Rights Reserved.
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree or at
 // https://spdx.org/licenses/MIT.html
 
-// Package hash2curve provides hash-to-curve compatible input expansion.
-package hash2curve
+package hash2curve_test
 
 import (
 	"bytes"
@@ -15,14 +14,19 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 	"strconv"
 	"testing"
 
 	"github.com/bytemare/hash"
+
+	"github.com/bytemare/hash2curve"
+	"github.com/bytemare/hash2curve/internal"
 )
+
+const expandMessageVectorFiles = "vectors/expand"
 
 func TestExpander_ZeroDST(t *testing.T) {
 	msg := []byte("test")
@@ -34,10 +38,10 @@ func TestExpander_ZeroDST(t *testing.T) {
 	}()
 
 	xmd1 := crypto.SHA256
-	_ = ExpandXMD(xmd1, msg, zeroDST, length)
+	_ = hash2curve.ExpandXMD(xmd1, msg, zeroDST, length)
 
 	xof1 := hash.SHAKE128
-	_ = ExpandXOF(xof1, msg, zeroDST, length)
+	_ = hash2curve.ExpandXOF(xof1.GetXOF(), msg, zeroDST, length)
 
 	t.Fatal("expected panic on zero length DST")
 }
@@ -51,10 +55,10 @@ func TestExpander_LongDST(t *testing.T) {
 	length := 32
 
 	xmd1 := crypto.SHA256
-	_ = ExpandXMD(xmd1, msg, longDST, length)
+	_ = hash2curve.ExpandXMD(xmd1, msg, longDST, length)
 
 	xof1 := hash.SHAKE128
-	_ = ExpandXOF(xof1, msg, longDST, length)
+	_ = hash2curve.ExpandXOF(xof1.GetXOF(), msg, longDST, length)
 }
 
 func TestExpander_XMDHighLength(t *testing.T) {
@@ -63,7 +67,7 @@ func TestExpander_XMDHighLength(t *testing.T) {
 	}()
 
 	length := 9000
-	_ = ExpandXMD(crypto.SHA256, []byte("input"), []byte("dst"), length)
+	_ = hash2curve.ExpandXMD(crypto.SHA256, []byte("input"), []byte("dst"), length)
 	t.Fatal("expected panic on extremely high requested output length")
 }
 
@@ -121,7 +125,7 @@ type set struct {
 	K     int             `json:"k"`
 }
 
-func mapHash(name string) hash.Identifier {
+func mapHash(name string) hash.Hash {
 	switch name {
 	case "SHA256":
 		return hash.SHA256
@@ -132,7 +136,7 @@ func mapHash(name string) hash.Identifier {
 	case "SHAKE256":
 		return hash.SHAKE256
 	default:
-		return nil
+		return 0
 	}
 }
 
@@ -147,7 +151,7 @@ func mapXMD(name string) crypto.Hash {
 	}
 }
 
-func mapXOF(name string) hash.Extendable {
+func mapXOF(name string) hash.Hash {
 	switch name {
 	case "SHAKE128":
 		return hash.SHAKE128
@@ -177,11 +181,11 @@ func concatenate(input ...[]byte) []byte {
 	return buf
 }
 
-func msgPrime(h hash.Identifier, input, dst []byte, length int) []byte {
-	lib := i2osp(length, 2)
-	dstPrime := dstPrime(dst)
+func msgPrime(h hash.Hash, input, dst []byte, length int) []byte {
+	lib := internal.I2osp(length, 2)
+	dstPrime := internal.DstPrime(dst)
 
-	if h.Extendable() {
+	if h.Type() == hash.ExtendableOutputFunction {
 		return concatenate(input, lib, dstPrime)
 	}
 
@@ -194,10 +198,10 @@ func msgPrime(h hash.Identifier, input, dst []byte, length int) []byte {
 func (s *set) dst() []byte {
 	if isXMD(s.Hash) {
 		h := mapXMD(s.Hash)
-		return vetDSTXMD(h.New(), []byte(s.DST))
+		return internal.VetDSTXMD(h.New(), []byte(s.DST))
 	} else {
 		h := mapXOF(s.Hash)
-		return vetXofDST(h, []byte(s.DST))
+		return internal.VetXofDST(h.GetXOF(), []byte(s.DST))
 	}
 }
 
@@ -212,7 +216,7 @@ func (s *set) run(t *testing.T) {
 				t.Fatalf("%d : %v", i, err)
 			}
 
-			dstPrime := dstPrime(dst)
+			dstPrime := internal.DstPrime(dst)
 			if !bytes.Equal(v.dstPrime, dstPrime) {
 				t.Fatalf("%d : invalid DST prime.\ngot : %v\nwant: %v", i, dstPrime, v.dstPrime)
 			}
@@ -224,9 +228,9 @@ func (s *set) run(t *testing.T) {
 
 			var x []byte
 			if isXMD(s.Hash) {
-				x = ExpandXMD(mapXMD(s.Hash), v.msg, dst, v.lenInBytes)
+				x = hash2curve.ExpandXMD(mapXMD(s.Hash), v.msg, dst, v.lenInBytes)
 			} else {
-				x = ExpandXOF(mapXOF(s.Hash), v.msg, dst, v.lenInBytes)
+				x = hash2curve.ExpandXOF(mapXOF(s.Hash).GetXOF(), v.msg, dst, v.lenInBytes)
 			}
 
 			if !bytes.Equal(v.uniformBytes, x) {
@@ -244,7 +248,7 @@ func (s *set) run(t *testing.T) {
 }
 
 func TestExpander_Vectors(t *testing.T) {
-	if err := filepath.Walk("vectors",
+	if err := filepath.Walk(expandMessageVectorFiles,
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
@@ -265,7 +269,7 @@ func TestExpander_Vectors(t *testing.T) {
 				}
 			}(file)
 
-			val, errRead := ioutil.ReadAll(file)
+			val, errRead := io.ReadAll(file)
 			if errRead != nil {
 				return errRead
 			}
