@@ -87,7 +87,7 @@ jobs:
             -Dsonar.projectKey=bytemare_hash2curve
             -Dsonar.go.coverage.reportPaths=.github/coverage.out
             -Dsonar.sources=.
-            -Dsonar.test.exclusions=expander_test.go,i2osp_test.go
-            -Dsonar.coverage.exclusions=expander_test.go,i2osp_test.go
-            -Dsonar.tests=expander_test.go,i2osp_test.go
+            -Dsonar.test.exclusions=tests/**
+            -Dsonar.coverage.exclusions=tests/**
+            -Dsonar.tests=tests/
             -Dsonar.verbose=true
