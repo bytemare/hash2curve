@@ -37,12 +37,20 @@ func VetXofDST(x *hash.ExtendableHash, dst []byte) []byte {
 		return dst
 	}
 
+	size := checkXOFSecurityLevel(x)
+
+	return x.Hash(size, []byte(dstLongPrefix), dst)
+}
+
+// checkXOFSecurityLength return the desired output length to shorten the DST, or panics if the XOFs security level is
+// too high for the expected output length.
+func checkXOFSecurityLevel(x *hash.ExtendableHash) int {
 	k := x.Algorithm().SecurityLevel()
 
 	size := int(math.Ceil(float64(2*k) / float64(8)))
-	if size > math.MaxUint8 {
+	if size > (x.Size() * 8) {
 		panic(errXOFHighOutput)
 	}
 
-	return x.Hash(size, []byte(dstLongPrefix), dst)
+	return size
 }
