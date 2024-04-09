@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@61b9e3751b92087fd0b06925ba6dd6314e06f089 # pin@master
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup Go
-        uses: actions/setup-go@d0c5defdf364f1d1fb07530c000084836192af9c # pin@master
+        uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
 
@@ -38,11 +38,11 @@ jobs:
         go: [ '1.22', '1.21' ]
     steps:
       - name: Checkout repo
-        uses: actions/checkout@61b9e3751b92087fd0b06925ba6dd6314e06f089 # pin@master
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup Go
-        uses: actions/setup-go@d0c5defdf364f1d1fb07530c000084836192af9c # pin@master
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go }}
 
@@ -55,11 +55,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@61b9e3751b92087fd0b06925ba6dd6314e06f089 # pin@master
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup Go
-        uses: actions/setup-go@d0c5defdf364f1d1fb07530c000084836192af9c # pin@master
+        uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
 
