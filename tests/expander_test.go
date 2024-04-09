@@ -15,6 +15,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -68,6 +69,16 @@ func TestExpander_XMDHighLength(t *testing.T) {
 
 	length := 9000
 	_ = hash2curve.ExpandXMD(crypto.SHA256, []byte("input"), []byte("dst"), length)
+	t.Fatal("expected panic on extremely high requested output length")
+}
+
+func TestExpander_XOFHighLength(t *testing.T) {
+	defer func() {
+		recover()
+	}()
+
+	length := math.MaxUint16 + 1
+	_ = hash2curve.ExpandXOF(hash.SHAKE128.GetXOF(), []byte("input"), []byte("dst"), length)
 	t.Fatal("expected panic on extremely high requested output length")
 }
 

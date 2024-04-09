@@ -10,15 +10,10 @@
 package field
 
 import (
-	"crypto/rand"
-	"fmt"
 	"math/big"
 )
 
-var (
-	zero = big.NewInt(0)
-	one  = big.NewInt(1)
-)
+var one = big.NewInt(1)
 
 // Field represents a Galois Field.
 type Field struct {
@@ -52,37 +47,14 @@ func NewField(prime *big.Int) Field {
 	}
 }
 
-// Zero returns the zero big.Int of the finite Field.
-func (f Field) Zero() *big.Int {
-	return zero
-}
-
 // One returns one big.Int of the finite Field.
 func (f Field) One() *big.Int {
 	return one
 }
 
-// Random sets res to a random big.Int in the Field.
-func (f Field) Random(res *big.Int) *big.Int {
-	tmp, err := rand.Int(rand.Reader, f.order)
-	if err != nil {
-		// We can as well not panic and try again in a loop
-		panic(fmt.Errorf("unexpected error in generating random bytes : %w", err))
-	}
-
-	res.Set(tmp)
-
-	return res
-}
-
 // Order returns the size of the Field.
 func (f Field) Order() *big.Int {
 	return f.order
-}
-
-// BitLen of the order.
-func (f Field) BitLen() int {
-	return f.order.BitLen()
 }
 
 // AreEqual returns whether both elements are equal.
@@ -116,11 +88,6 @@ func (f Field) IsSquare(e *big.Int) bool {
 	return f.AreEqual(f.LegendreSymbol(e), f.One())
 }
 
-// IsEqual returns whether the two fields have the same order.
-func (f Field) IsEqual(f2 *Field) bool {
-	return f.order.Cmp(f2.order) == 0
-}
-
 // Mod reduces x modulo the field order.
 func (f Field) Mod(x *big.Int) *big.Int {
 	return x.Mod(x, f.order)
@@ -131,19 +98,6 @@ func (f Field) Neg(res, x *big.Int) *big.Int {
 	return f.Mod(res.Neg(x))
 }
 
-// CondNeg sets res to -x if cond == 1.
-func (f Field) CondNeg(res, x *big.Int, cond int) {
-	var neg, cpy big.Int
-	cpy.Set(x)
-	f.Neg(&neg, x)
-
-	if cond == 1 {
-		res.Set(&neg)
-	} else {
-		res.Set(&cpy)
-	}
-}
-
 // Add sets res to x + y modulo the field order.
 func (f Field) Add(res, x, y *big.Int) {
 	f.Mod(res.Add(x, y))
@@ -152,11 +106,6 @@ func (f Field) Add(res, x, y *big.Int) {
 // Sub sets res to x - y modulo the field order.
 func (f Field) Sub(res, x, y *big.Int) *big.Int {
 	return f.Mod(res.Sub(x, y))
-}
-
-// Lsh sets res to the left shift of n bits on x modulo the field order.
-func (f Field) Lsh(res, x *big.Int, n uint) {
-	f.Mod(res.Lsh(x, n))
 }
 
 // Mul sets res to the multiplication of x and y modulo the field order.

@@ -108,6 +108,7 @@ func newElementWithAffine(x, y *big.Int) *element {
 	return e
 }
 
+// add is a generic affine-coordinate add.
 func (e *element) add(element *element) *element {
 	var t0, t1, ll, x, y big.Int
 	x1, y1 := e.x, e.y
