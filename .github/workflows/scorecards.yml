@@ -1,26 +1,38 @@
-name: Scorecards supply-chain security
+name: Scorecard analysis workflow
 on:
-  # Only the default branch is supported.
-  branch_protection_rule:
-  schedule:
-    - cron: '44 9 * * 0'
   push:
+    # Only the default branch is supported.
+    branches:
+      - main
+  schedule:
+    # Weekly on Saturdays.
+    - cron: '30 1 * * 6'
+  pull_request:
+    # All branches are supported.
     branches: [ main ]
 
-# Declare default permissions as read only.
 permissions: read-all
 
 jobs:
   analysis:
-    name: Scorecards analysis
+    name: Scorecard analysis
     runs-on: ubuntu-latest
     permissions:
-      # Needed to upload the results to code-scanning dashboard.
+      # Needed for Code scanning upload
       security-events: write
-      actions: read
-      contents: read
+      # Needed for GitHub OIDC token if publish_results is true
+      id-token: write
 
     steps:
+      - uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            api.osv.dev:443
+            github.com:443
+
       - name: "Checkout code"
         uses: actions/checkout@cd7d8d697e10461458bc61a30d094dc601a8b017 # pin@main
         with:
