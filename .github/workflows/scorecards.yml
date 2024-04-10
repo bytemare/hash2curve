@@ -24,14 +24,12 @@ jobs:
       id-token: write
 
     steps:
-      - uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+      - uses: step-security/harden-runner@6c3b1c91e8873ae0c705b0709f957c7a6a5eaf10 # pin@main
         with:
           disable-sudo: true
           egress-policy: block
           allowed-endpoints: >
-            api.github.com:443
-            api.osv.dev:443
-            github.com:443
+            api.github.com:443 api.osv.dev:443 fulcio.sigstore.dev:443 github.com:443 oss-fuzz-build-logs.storage.googleapis.com:443 www.bestpractices.dev:443
 
       - name: "Checkout code"
         uses: actions/checkout@cd7d8d697e10461458bc61a30d094dc601a8b017 # pin@main
@@ -45,7 +43,7 @@ jobs:
           results_format: sarif
           # Read-only PAT token. To create it,
           # follow the steps in https://github.com/ossf/scorecard-action#pat-token-creation.
-          repo_token: ${{ secrets.SCORECARD_READ_TOKEN }}
+          # repo_token: ${{ secrets.SCORECARD_READ_TOKEN }}
           # Publish the results to enable scorecard badges. For more details, see
           # https://github.com/ossf/scorecard-action#publishing-results.
           # For private repositories, `publish_results` will automatically be set to `false`,

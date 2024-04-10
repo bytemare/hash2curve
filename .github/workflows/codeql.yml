@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+      - uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # pin@main
         with:
           disable-sudo: true
           egress-policy: block
@@ -33,10 +33,9 @@ jobs:
             proxy.golang.org:443
             storage.googleapis.com:443
             sum.golang.org:443
-      
 
       - name: Checkout repository
-        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # pin@main
+        uses: actions/checkout@cd7d8d697e10461458bc61a30d094dc601a8b017 # pin@main
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL

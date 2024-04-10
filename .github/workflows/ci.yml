@@ -12,22 +12,19 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+      - uses: step-security/harden-runner@6c3b1c91e8873ae0c705b0709f957c7a6a5eaf10 # pin@main
         with:
           disable-sudo: true
           egress-policy: block
           allowed-endpoints: >
-            api.github.com:443
-            github.com:443
-            objects.githubusercontent.com:443
-            raw.githubusercontent.com:443
+            api.github.com:443 github.com:443 proxy.golang.org:443 objects.githubusercontent.com:443 raw.githubusercontent.com:443
 
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@cd7d8d697e10461458bc61a30d094dc601a8b017 # pin@main
         with:
           fetch-depth: 0
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@be1aa1186e83689f3e45adaf3697af86f816fb2e # pin@main
         with:
           go-version-file: ./go.mod
 
@@ -47,22 +44,19 @@ jobs:
       matrix:
         go: [ '1.22', '1.21' ]
     steps:
-      - uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+      - uses: step-security/harden-runner@6c3b1c91e8873ae0c705b0709f957c7a6a5eaf10 # pin@main
         with:
           disable-sudo: true
           egress-policy: block
           allowed-endpoints: >
-            github.com:443
-            proxy.golang.org:443
-            storage.googleapis.com:443
-            sum.golang.org:443
+            github.com:443 proxy.golang.org:443 storage.googleapis.com:443 sum.golang.org:443
 
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@cd7d8d697e10461458bc61a30d094dc601a8b017 # pin@main
         with:
           fetch-depth: 0
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@be1aa1186e83689f3e45adaf3697af86f816fb2e # pin@main
         with:
           go-version: ${{ matrix.go }}
 
@@ -74,27 +68,19 @@ jobs:
     name: Analyze
     runs-on: ubuntu-latest
     steps:
-      - uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+      - uses: step-security/harden-runner@6c3b1c91e8873ae0c705b0709f957c7a6a5eaf10 # pin@main
         with:
           disable-sudo: true
           egress-policy: block
           allowed-endpoints: >
-            api.codecov.io:443
-            api.github.com:443
-            cli.codecov.io:443
-            ea6ne4j2sb.execute-api.eu-central-1.amazonaws.com:443
-            github.com:443
-            objects.githubusercontent.com:443
-            scanner.sonarcloud.io:443
-            sonarcloud.io:443
-            storage.googleapis.com:443
+            api.codecov.io:443 api.github.com:443 cli.codecov.io:443 ea6ne4j2sb.execute-api.eu-central-1.amazonaws.com:443 github.com:443 proxy.golang.org:443 objects.githubusercontent.com:443 scanner.sonarcloud.io:443 sonarcloud.io:443 storage.googleapis.com:443
 
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@cd7d8d697e10461458bc61a30d094dc601a8b017 # pin@main
         with:
           fetch-depth: 0
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@be1aa1186e83689f3e45adaf3697af86f816fb2e # pin@main
         with:
           go-version-file: ./go.mod
 
