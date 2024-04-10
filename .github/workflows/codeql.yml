@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+      - uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # pin@main
         with:
           disable-sudo: true
           egress-policy: block
