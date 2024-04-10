@@ -26,7 +26,12 @@ jobs:
     steps:
       - uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
         with:
-          egress-policy: audit
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            api.osv.dev:443
+            github.com:443
 
       - name: "Checkout code"
         uses: actions/checkout@cd7d8d697e10461458bc61a30d094dc601a8b017 # pin@main
