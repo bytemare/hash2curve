@@ -90,7 +90,7 @@ jobs:
 
       # Codecov
       - name: Codecov
-        uses: codecov/codecov-action@84508663e988701840491b86de86b666e8a86bed # pin@main
+        uses: codecov/codecov-action@8deb5f497d6af48d764f4983aea375e70bd09747 # pin@main
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
