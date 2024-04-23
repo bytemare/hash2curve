@@ -35,7 +35,7 @@ jobs:
             sum.golang.org:443
 
       - name: Checkout repository
-        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f
+        uses: actions/checkout@37b082107ba410260a3aaddf93122e04801ce631
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
