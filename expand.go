@@ -6,7 +6,6 @@
 // LICENSE file in the root directory of this source tree or at
 // https://spdx.org/licenses/MIT.html
 
-// Package hash2curve provides hash-to-curve compatible hashing over arbitrary input.
 package hash2curve
 
 import (
@@ -34,13 +33,17 @@ func checkDST(dst []byte) {
 }
 
 // ExpandXMD expands the input and dst using the given fixed length hash function.
-func ExpandXMD(id crypto.Hash, input, dst []byte, length int) []byte {
+// - dst MUST be non-nil, longer than 0 and lower than 256. It's recommended that DST at least 16 bytes long.
+// - length must be a positive integer lower than 255 * (size of digest).
+func ExpandXMD(id crypto.Hash, input, dst []byte, length uint) []byte {
 	checkDST(dst)
 	return internal.ExpandXMD(id, input, dst, length)
 }
 
 // ExpandXOF expands the input and dst using the given extendable output hash function.
-func ExpandXOF(ext *hash.ExtendableHash, input, dst []byte, length int) []byte {
+// - dst MUST be non-nil and its length longer than 0. It's recommended that DST at least 16 bytes long.
+// - length must be a positive integer higher than 32.
+func ExpandXOF(ext *hash.ExtendableHash, input, dst []byte, length uint) []byte {
 	checkDST(dst)
 	return internal.ExpandXOF(ext, input, dst, length)
 }

@@ -63,8 +63,8 @@ func expectPanic(expectedError error, f func()) (bool, error) {
 
 type I2ospTest struct {
 	encoded []byte
-	value   int
-	size    int
+	value   uint
+	size    uint
 }
 
 var I2OSPVectors = []I2ospTest{
@@ -107,38 +107,24 @@ func TestI2osp(t *testing.T) {
 		})
 	}
 
-	length := -1
+	length := 0
 	if hasPanic, err := expectPanic(nil, func() {
-		_ = internal.I2osp(1, length)
-	}); !hasPanic {
-		t.Fatalf("expected panic with with negative length: %v", err)
-	}
-
-	length = 0
-	if hasPanic, err := expectPanic(nil, func() {
-		_ = internal.I2osp(1, length)
+		_ = internal.I2osp(1, uint(length))
 	}); !hasPanic {
 		t.Fatalf("expected panic with with 0 length: %v", err)
 	}
 
 	length = 5
 	if hasPanic, err := expectPanic(nil, func() {
-		_ = internal.I2osp(1, length)
+		_ = internal.I2osp(1, uint(length))
 	}); !hasPanic {
 		t.Fatalf("expected panic with length too big: %v", err)
-	}
-
-	negative := -1
-	if hasPanic, err := expectPanic(nil, func() {
-		_ = internal.I2osp(negative, 4)
-	}); !hasPanic {
-		t.Fatalf("expected panic with negative input: %v", err)
 	}
 
 	tooLarge := 1 << 32
 	length = 1
 	if hasPanic, err := expectPanic(nil, func() {
-		_ = internal.I2osp(tooLarge, length)
+		_ = internal.I2osp(uint(tooLarge), uint(length))
 	}); !hasPanic {
 		t.Fatalf("expected panic with exceeding value for the length: %v", err)
 	}
@@ -151,7 +137,7 @@ func TestI2osp(t *testing.T) {
 	}
 
 	for k, v := range lengths {
-		r := internal.I2osp(k, v)
+		r := internal.I2osp(uint(k), uint(v))
 
 		if len(r) != v {
 			t.Fatalf("invalid length for %d. Expected '%d', got '%d' (%v)", k, v, len(r), r)

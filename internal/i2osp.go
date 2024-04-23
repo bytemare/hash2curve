@@ -19,14 +19,13 @@ const (
 )
 
 var (
-	errInputNegative  = errors.New("negative input")
 	errInputLarge     = errors.New("input is too high for length")
 	errLengthNegative = errors.New("length is negative or 0")
 	errLengthTooBig   = errors.New("requested length is > 4")
 )
 
 // I2osp 32-bit Integer to Octet Stream Primitive on maximum 4 bytes.
-func I2osp(value, length int) []byte {
+func I2osp(value, length uint) []byte {
 	if length <= 0 {
 		panic(errLengthNegative)
 	}
@@ -38,8 +37,6 @@ func I2osp(value, length int) []byte {
 	out := make([]byte, 4)
 
 	switch v := value; {
-	case v < 0:
-		panic(errInputNegative)
 	case v >= 1<<(8*length):
 		panic(errInputLarge)
 	case length == 1:

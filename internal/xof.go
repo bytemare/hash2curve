@@ -19,14 +19,14 @@ import (
 var errXOFHighOutput = errors.New("XOF dst hashing is too long")
 
 // ExpandXOF implements expand_message_xof as specified in RFC 9380 section 5.3.2.
-func ExpandXOF(ext *hash.ExtendableHash, input, dst []byte, length int) []byte {
+func ExpandXOF(ext *hash.ExtendableHash, input, dst []byte, length uint) []byte {
 	if length > math.MaxUint16 {
 		panic(errLengthTooLarge)
 	}
 
 	dst = VetXofDST(ext, dst)
 	len2o := I2osp(length, 2)
-	dstLen2o := I2osp(len(dst), 1)
+	dstLen2o := I2osp(uint(len(dst)), 1)
 
 	return ext.Hash(length, input, len2o, dst, dstLen2o)
 }
@@ -44,11 +44,11 @@ func VetXofDST(x *hash.ExtendableHash, dst []byte) []byte {
 
 // checkXOFSecurityLength return the desired output length to shorten the DST, or panics if the XOFs security level is
 // too high for the expected output length.
-func checkXOFSecurityLevel(x *hash.ExtendableHash) int {
+func checkXOFSecurityLevel(x *hash.ExtendableHash) uint {
 	k := x.Algorithm().SecurityLevel()
 
-	size := int(math.Ceil(float64(2*k) / float64(8)))
-	if size > (x.Size() * 8) {
+	size := uint(math.Ceil(float64(2*k) / float64(8)))
+	if size > uint(x.Size()*8) {
 		panic(errXOFHighOutput)
 	}
 
