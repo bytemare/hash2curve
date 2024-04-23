@@ -40,12 +40,12 @@ jobs:
             www.bestpractices.dev:443
 
       - name: "Checkout code"
-        uses: actions/checkout@cd7d8d697e10461458bc61a30d094dc601a8b017
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f
         with:
           persist-credentials: false
 
       - name: "Run analysis"
-        uses: ossf/scorecard-action@279bc104ced111345c5595d3417ea20e8c131d56
+        uses: ossf/scorecard-action@665016c9c2c7c34fe934fb13ebf88bff794f9b1d
         with:
           results_file: results.sarif
           results_format: sarif
@@ -60,7 +60,7 @@ jobs:
 
       # Upload the results as artifacts (optional).
       - name: "Upload artifact"
-        uses: actions/upload-artifact@0c366cb4fc8897159c94880f94b55bc716ad6a66
+        uses: actions/upload-artifact@b06cde36fc32a3ee94080e87258567f73f921537
         with:
           name: SARIF file
           path: results.sarif

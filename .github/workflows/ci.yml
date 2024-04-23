@@ -20,17 +20,17 @@ jobs:
             api.github.com:443 github.com:443 proxy.golang.org:443 objects.githubusercontent.com:443 raw.githubusercontent.com:443
 
       - name: Checkout repo
-        uses: actions/checkout@cd7d8d697e10461458bc61a30d094dc601a8b017
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f
         with:
           fetch-depth: 0
       - name: Setup Go
-        uses: actions/setup-go@be1aa1186e83689f3e45adaf3697af86f816fb2e
+        uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
         with:
           go-version-file: ./go.mod
 
       # Linting
       - name: Linting
-        uses: golangci/golangci-lint-action@e3c1789d3fa51a12a8bfe0fd1a466fa04004287d
+        uses: golangci/golangci-lint-action@847b9efe2ec0524a97301d82f527c5e22ec16a2d
         with:
           version: latest
           args: --config=./.github/.golangci.yml ./...
@@ -52,11 +52,11 @@ jobs:
             github.com:443 proxy.golang.org:443 storage.googleapis.com:443 sum.golang.org:443
 
       - name: Checkout repo
-        uses: actions/checkout@cd7d8d697e10461458bc61a30d094dc601a8b017
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f
         with:
           fetch-depth: 0
       - name: Setup Go
-        uses: actions/setup-go@be1aa1186e83689f3e45adaf3697af86f816fb2e
+        uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
         with:
           go-version: ${{ matrix.go }}
 
@@ -76,11 +76,11 @@ jobs:
             api.codecov.io:443 api.github.com:443 cli.codecov.io:443 ea6ne4j2sb.execute-api.eu-central-1.amazonaws.com:443 github.com:443 proxy.golang.org:443 objects.githubusercontent.com:443 scanner.sonarcloud.io:443 sonarcloud.io:443 storage.googleapis.com:443
 
       - name: Checkout repo
-        uses: actions/checkout@cd7d8d697e10461458bc61a30d094dc601a8b017
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f
         with:
           fetch-depth: 0
       - name: Setup Go
-        uses: actions/setup-go@be1aa1186e83689f3e45adaf3697af86f816fb2e
+        uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
         with:
           go-version-file: ./go.mod
 
@@ -90,7 +90,7 @@ jobs:
 
       # Codecov
       - name: Codecov
-        uses: codecov/codecov-action@84508663e988701840491b86de86b666e8a86bed
+        uses: codecov/codecov-action@8deb5f497d6af48d764f4983aea375e70bd09747
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
