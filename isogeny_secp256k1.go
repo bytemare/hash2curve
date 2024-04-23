@@ -9,7 +9,6 @@
 package hash2curve
 
 import (
-	"fmt"
 	"math/big"
 
 	"github.com/bytemare/hash2curve/internal/field"
@@ -19,9 +18,7 @@ const secp256k1FieldOrder = "115792089237316195423570985008687907853269984665640
 
 func setString(s string, base int) *big.Int {
 	i := new(big.Int)
-	if _, ok := i.SetString(s, base); !ok {
-		panic(fmt.Sprintf("setting int in base %d failed: %v", base, s))
-	}
+	_, _ = i.SetString(s, base)
 
 	return i
 }
