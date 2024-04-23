@@ -24,7 +24,7 @@ jobs:
       id-token: write
 
     steps:
-      - uses: step-security/harden-runner@6c3b1c91e8873ae0c705b0709f957c7a6a5eaf10 # pin@main
+      - uses: step-security/harden-runner@6c3b1c91e8873ae0c705b0709f957c7a6a5eaf10
         with:
           disable-sudo: true
           egress-policy: block
@@ -40,12 +40,12 @@ jobs:
             www.bestpractices.dev:443
 
       - name: "Checkout code"
-        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # pin@main
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f
         with:
           persist-credentials: false
 
       - name: "Run analysis"
-        uses: ossf/scorecard-action@665016c9c2c7c34fe934fb13ebf88bff794f9b1d # pin@main
+        uses: ossf/scorecard-action@665016c9c2c7c34fe934fb13ebf88bff794f9b1d
         with:
           results_file: results.sarif
           results_format: sarif
@@ -60,7 +60,7 @@ jobs:
 
       # Upload the results as artifacts (optional).
       - name: "Upload artifact"
-        uses: actions/upload-artifact@b06cde36fc32a3ee94080e87258567f73f921537 # pin@master
+        uses: actions/upload-artifact@b06cde36fc32a3ee94080e87258567f73f921537
         with:
           name: SARIF file
           path: results.sarif
@@ -68,6 +68,6 @@ jobs:
 
       # Upload the results to GitHub's code scanning dashboard.
       - name: "Upload to code-scanning"
-        uses: github/codeql-action/upload-sarif@24a01703e471c90cfb2687429069c3d41242cdf5 # pin@main
+        uses: github/codeql-action/upload-sarif@24a01703e471c90cfb2687429069c3d41242cdf5
         with:
           sarif_file: results.sarif

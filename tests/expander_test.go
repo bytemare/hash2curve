@@ -32,7 +32,7 @@ const expandMessageVectorFiles = "vectors/expand"
 func TestExpander_ZeroDST(t *testing.T) {
 	msg := []byte("test")
 	zeroDST := []byte("")
-	length := 32
+	length := uint(32)
 
 	defer func() {
 		recover()
@@ -53,7 +53,7 @@ func TestExpander_LongDST(t *testing.T) {
 		"a255_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
 			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
 	)
-	length := 32
+	length := uint(32)
 
 	xmd1 := crypto.SHA256
 	_ = hash2curve.ExpandXMD(xmd1, msg, longDST, length)
@@ -67,7 +67,7 @@ func TestExpander_XMDHighLength(t *testing.T) {
 		recover()
 	}()
 
-	length := 9000
+	length := uint(9000)
 	_ = hash2curve.ExpandXMD(crypto.SHA256, []byte("input"), []byte("dst"), length)
 	t.Fatal("expected panic on extremely high requested output length")
 }
@@ -77,7 +77,7 @@ func TestExpander_XOFHighLength(t *testing.T) {
 		recover()
 	}()
 
-	length := math.MaxUint16 + 1
+	length := uint(math.MaxUint16 + 1)
 	_ = hash2curve.ExpandXOF(hash.SHAKE128.GetXOF(), []byte("input"), []byte("dst"), length)
 	t.Fatal("expected panic on extremely high requested output length")
 }
@@ -87,7 +87,7 @@ type vector struct {
 	msg          []byte
 	msgPrime     []byte
 	uniformBytes []byte
-	lenInBytes   int
+	lenInBytes   uint
 }
 
 type vectorStrings struct {
@@ -112,7 +112,7 @@ func (vs *vectorStrings) decode() (*vector, error) {
 		return nil, err
 	}
 
-	v.lenInBytes = int(length)
+	v.lenInBytes = uint(length)
 	v.msg = []byte(vs.Msg)
 
 	v.msgPrime, err = hex.DecodeString(vs.MsgPrime)
@@ -192,7 +192,7 @@ func concatenate(input ...[]byte) []byte {
 	return buf
 }
 
-func msgPrime(h hash.Hash, input, dst []byte, length int) []byte {
+func msgPrime(h hash.Hash, input, dst []byte, length uint) []byte {
 	lib := internal.I2osp(length, 2)
 	dstPrime := internal.DstPrime(dst)
 

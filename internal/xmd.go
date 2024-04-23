@@ -19,7 +19,7 @@ import (
 var errLengthTooLarge = errors.New("requested byte length is too high")
 
 // ExpandXMD implements expand_message_xmd as specified in RFC 9380 section 5.3.1.
-func ExpandXMD(id crypto.Hash, input, dst []byte, length int) []byte {
+func ExpandXMD(id crypto.Hash, input, dst []byte, length uint) []byte {
 	h := id.New()
 	dst = VetDSTXMD(h, dst)
 	b := id.Size()
@@ -52,11 +52,11 @@ func ExpandXMD(id crypto.Hash, input, dst []byte, length int) []byte {
 
 // DstPrime length-suffix-encodes dst.
 func DstPrime(dst []byte) []byte {
-	return append(dst, I2osp(len(dst), 1)[0])
+	return append(dst, I2osp(uint(len(dst)), 1)[0])
 }
 
 // xmd expands the message digest until it reaches the desirable length.
-func xmd(h hash.Hash, b0, b1, dstPrime []byte, ell uint, length int) []byte {
+func xmd(h hash.Hash, b0, b1, dstPrime []byte, ell, length uint) []byte {
 	uniformBytes := make([]byte, 0, length)
 	uniformBytes = append(uniformBytes, b1...)
 	bi := make([]byte, len(b1))

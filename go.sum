@@ -1,5 +1,5 @@
-github.com/bytemare/hash v0.2.1 h1:lHjbGEZSHkVPZ2aEf0PtvBxJekUUke9BnaUyggOkV/s=
-github.com/bytemare/hash v0.2.1/go.mod h1:MGJ83jnijUU7Uaa/Qkkw02VxXg6rsV46gIkdBwaOZJ0=
+github.com/bytemare/hash v0.3.0 h1:RqFMt3mqpF7UxLdjBrsOZm/2cz0cQiAOnYc9gDLopWE=
+github.com/bytemare/hash v0.3.0/go.mod h1:YKOBchL0l8hRLFinVCL8YUKokGNIMhrWEHPHo3EV7/M=
 golang.org/x/crypto v0.22.0 h1:g1v0xeRhjcugydODzvb3mEM9SQ0HGp9s/nh3COQ/C30=
 golang.org/x/crypto v0.22.0/go.mod h1:vr6Su+7cTlO45qkww3VDJlzDn0ctJvRgYbC2NvXHt+M=
 golang.org/x/sys v0.19.0 h1:q5f1RH2jigJ1MoAWp2KTp3gm5zAGFUTarQZ5U386+4o=
