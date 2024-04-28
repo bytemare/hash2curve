@@ -30,9 +30,9 @@ jobs:
           allowed-endpoints: >
             api.github.com:443
             github.com:443
+            objects.githubusercontent.com:443
             proxy.golang.org:443
-            storage.googleapis.com:443
-            sum.golang.org:443
+            raw.githubusercontent.com:443
 
       - name: Checkout repository
         uses: actions/checkout@37b082107ba410260a3aaddf93122e04801ce631
