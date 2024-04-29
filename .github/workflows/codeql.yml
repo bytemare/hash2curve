@@ -33,21 +33,23 @@ jobs:
           allowed-endpoints: >
             api.github.com:443
             github.com:443
+            objects.githubusercontent.com:443
             proxy.golang.org:443
             storage.googleapis.com:443
             sum.golang.org:443
+            uploads.github.com:443
 
       - name: Checkout repository
-        uses: actions/checkout@37b082107ba410260a3aaddf93122e04801ce631
+        uses: actions/checkout@8459bc0c7e3759cdf591f513d9f141a95fef0a8f
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@dbf2b1706b768069fb1bb2dd2d8552be7a9e2a51
+        uses: github/codeql-action/init@4ebadbc7468649cf79b138f45e20d999351f6ed0
         with:
           languages: go
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@dbf2b1706b768069fb1bb2dd2d8552be7a9e2a51
+        uses: github/codeql-action/autobuild@4ebadbc7468649cf79b138f45e20d999351f6ed0
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@dbf2b1706b768069fb1bb2dd2d8552be7a9e2a51
+        uses: github/codeql-action/analyze@4ebadbc7468649cf79b138f45e20d999351f6ed0
