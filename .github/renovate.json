@@ -1,7 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "github>bytemare/renovate-config",
-    "config:recommended"
+    "github>bytemare/renovate-config"
   ]
 }
