@@ -45,8 +45,7 @@ func HashToFieldXMD(id crypto.Hash, input, dst []byte, count, ext, securityLengt
 func reduceUniform(uniform []byte, count, securityLength uint, modulo *big.Int) []*big.Int {
 	res := make([]*big.Int, count)
 
-	var i uint
-	for i = 0; i < count; i++ {
+	for i := range count {
 		offset := i * securityLength
 		res[i] = reduce(uniform[offset:offset+securityLength], modulo)
 	}
