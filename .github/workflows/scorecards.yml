@@ -1,73 +1,39 @@
-name: Scorecard analysis workflow
+name: Scorecard Analysis Workflow
+
 on:
   push:
-    # Only the default branch is supported.
+    branches:
+      - main
+  pull_request:
     branches:
       - main
   schedule:
     # Weekly on Saturdays.
     - cron: '30 1 * * 6'
-  pull_request:
-    # All branches are supported.
-    branches: [ main ]
 
-permissions: read-all
+permissions: {}
 
 jobs:
   analysis:
-    name: Scorecard analysis
-    runs-on: ubuntu-latest
     permissions:
-      # Needed for Code scanning upload
+      # Needed if using Code scanning alerts
       security-events: write
       # Needed for GitHub OIDC token if publish_results is true
       id-token: write
+      # Needed for nested workflow
+      actions: read
+      attestations: read
+      checks: read
+      contents: read
+      deployments: read
+      issues: read
+      discussions: read
+      packages: read
+      pages: read
+      pull-requests: read
+      repository-projects: read
+      statuses: read
 
-    steps:
-      - uses: step-security/harden-runner@9ff9d14760a73102d9fa2f47131624137f50ead8
-        with:
-          disable-sudo: true
-          egress-policy: block
-          allowed-endpoints: >
-            api.github.com:443
-            api.osv.dev:443
-            api.securityscorecards.dev:443
-            fulcio.sigstore.dev:443
-            github.com:443
-            oss-fuzz-build-logs.storage.googleapis.com:443
-            rekor.sigstore.dev:443
-            tuf-repo-cdn.sigstore.dev:443
-            www.bestpractices.dev:443
-
-      - name: "Checkout code"
-        uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b
-        with:
-          persist-credentials: false
-
-      - name: "Run analysis"
-        uses: ossf/scorecard-action@fad9a3cc533bb069b1f01f272f1f630895cd690a
-        with:
-          results_file: results.sarif
-          results_format: sarif
-          # Read-only PAT token. To create it,
-          # follow the steps in https://github.com/ossf/scorecard-action#pat-token-creation.
-          # repo_token: ${{ secrets.SCORECARD_READ_TOKEN }}
-          # Publish the results to enable scorecard badges. For more details, see
-          # https://github.com/ossf/scorecard-action#publishing-results.
-          # For private repositories, `publish_results` will automatically be set to `false`,
-          # regardless of the value entered here.
-          publish_results: true
-
-      # Upload the results as artifacts (optional).
-      - name: "Upload artifact"
-        uses: actions/upload-artifact@552bf3722c16e81001aea7db72d8cedf64eb5f68
-        with:
-          name: SARIF file
-          path: results.sarif
-          retention-days: 5
-
-      # Upload the results to GitHub's code scanning dashboard.
-      - name: "Upload to code-scanning"
-        uses: github/codeql-action/upload-sarif@8fcfedf57053e09257688fce7a0beeb18b1b9ae3
-        with:
-          sarif_file: results.sarif
+    uses: bytemare/actions/.github/workflows/scorecard.yml@v1.0.0
+    secrets:
+      token: ${{ secrets.SCORECARD_TOKEN }}
