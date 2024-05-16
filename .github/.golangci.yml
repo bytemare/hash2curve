@@ -21,7 +21,6 @@ linters:
     - errchkjson
     - errname
     - errorlint
-    - execinquery
     - exhaustive
     - exhaustruct
     - exportloopref
@@ -162,7 +161,7 @@ linters-settings:
   gosimple:
     checks: [ "all" ]
   govet:
-    check-shadowing: true
+    shadow: true
     disable-all: true
     enable:
       - asmdecl
@@ -272,4 +271,4 @@ run:
   tests: false
 
 output:
-  format: github-actions
+  formats: github-actions
