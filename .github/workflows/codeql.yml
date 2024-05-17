@@ -10,46 +10,14 @@ on:
   schedule:
     - cron: '31 10 * * 0'
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
-  codeql:
-    name: CodeQL
-    runs-on: ubuntu-latest
+  CodeQL:
     permissions:
       actions: read
       contents: read
       security-events: write
-
-    strategy:
-      fail-fast: false
-
-    steps:
-      - uses: step-security/harden-runner@9ff9d14760a73102d9fa2f47131624137f50ead8
-        with:
-          disable-sudo: true
-          egress-policy: block
-          allowed-endpoints: >
-            api.github.com:443
-            github.com:443
-            objects.githubusercontent.com:443
-            proxy.golang.org:443
-            storage.googleapis.com:443
-            sum.golang.org:443
-            uploads.github.com:443
-
-      - name: Checkout repository
-        uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b
-
-      # Initializes the CodeQL tools for scanning.
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@8fcfedf57053e09257688fce7a0beeb18b1b9ae3
-        with:
-          languages: go
-
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@8fcfedf57053e09257688fce7a0beeb18b1b9ae3
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@8fcfedf57053e09257688fce7a0beeb18b1b9ae3
+    uses: bytemare/workflows/.github/workflows/codeql.yml@b1646a1525a16e413436f5b74e308685a2f7d7d3
+    with:
+      language: go
