@@ -24,8 +24,8 @@ var (
 	errLengthTooBig   = errors.New("requested length is > 4")
 )
 
-// I2osp 32-bit Integer to Octet Stream Primitive on maximum 4 bytes.
-func I2osp(value, length uint) []byte {
+// I2OSP 32-bit Integer to Octet Stream Primitive on maximum 4 bytes.
+func I2OSP(value, length uint) []byte {
 	if length <= 0 {
 		panic(errLengthNegative)
 	}
