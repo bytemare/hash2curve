@@ -1,5 +1,5 @@
 # Hash To Curve
-[![hash2curve](https://github.com/bytemare/hash2curve/actions/workflows/ci.yml/badge.svg)](https://github.com/bytemare/hash2curve/actions/workflows/ci.yml)
+[![hash2curve](https://github.com/bytemare/hash2curve/actions/workflows/code-scan.yml/badge.svg)](https://github.com/bytemare/hash2curve/actions/workflows/code-scan.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/bytemare/hash2curve.svg)](https://pkg.go.dev/github.com/bytemare/hash2curve)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/bytemare/hash2curve/badge)](https://securityscorecards.dev/viewer/?uri=github.com/bytemare/hash2curve)
 [![codecov](https://codecov.io/gh/bytemare/hash2curve/branch/main/graph/badge.svg?token=5bQfB0OctA)](https://codecov.io/gh/bytemare/hash2curve)
@@ -9,6 +9,18 @@
 ```
 
 Package hash2curve implements Hashing to Elliptic Curves as specified in [RFC 9380](https://datatracker.ietf.org/doc/rfc9380).
+
+The following table shows supported groups with hash-to-curve capability and links each one to the underlying
+implementations:
+
+| Curve        | Backend                        |
+|--------------|--------------------------------|
+| Ristretto255 | github.com/gtank/ristretto255  |
+| P-256        | filippo.io/nistec              |
+| P-384        | filippo.io/nistec              |
+| P-521        | filippo.io/nistec              |
+| Edwards25519 | filippo.io/edwards25519        |
+| Secp256k1    | github.com/bytemare/hash2curve |
 
 #### What is hash2curve?
 

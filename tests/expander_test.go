@@ -193,7 +193,7 @@ func concatenate(input ...[]byte) []byte {
 }
 
 func msgPrime(h hash.Hash, input, dst []byte, length uint) []byte {
-	lib := internal.I2osp(length, 2)
+	lib := internal.I2OSP(length, 2)
 	dstPrime := internal.DstPrime(dst)
 
 	if h.Type() == hash.ExtendableOutputFunction {

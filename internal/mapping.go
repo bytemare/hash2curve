@@ -6,7 +6,7 @@
 // LICENSE file in the root directory of this source tree or at
 // https://spdx.org/licenses/MIT.html
 
-package hash2curve
+package internal
 
 import (
 	"math/big"
@@ -15,8 +15,7 @@ import (
 )
 
 // MapToCurveSSWU implements the Simplified SWU method for Weierstrass curves for any base field.
-func MapToCurveSSWU(a, b, z, fe, order *big.Int) (x, y *big.Int) {
-	fp := field.NewField(order)
+func MapToCurveSSWU(fp *field.Field, a, b, z, fe *big.Int) (x, y *big.Int) {
 	var tv1, tv2, tv3, tv4, tv5, tv6, _y1 big.Int
 	x, y = new(big.Int), new(big.Int)
 

@@ -31,7 +31,7 @@ func ExpandXMD(id crypto.Hash, input, dst []byte, length uint) []byte {
 	}
 
 	zPad := make([]byte, blockSize)
-	lib := I2osp(length, 2)
+	lib := I2OSP(length, 2)
 	zeroByte := []byte{0}
 	dstPrime := DstPrime(dst)
 
@@ -52,7 +52,7 @@ func ExpandXMD(id crypto.Hash, input, dst []byte, length uint) []byte {
 
 // DstPrime length-suffix-encodes dst.
 func DstPrime(dst []byte) []byte {
-	return append(dst, I2osp(uint(len(dst)), 1)[0])
+	return append(dst, I2OSP(uint(len(dst)), 1)[0])
 }
 
 // xmd expands the message digest until it reaches the desirable length.

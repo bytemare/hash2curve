@@ -14,15 +14,15 @@ linters:
     #- depguard
     - dogsled
     - dupl
+    - dupword
     - durationcheck
     - err113
-    - errcheck
+    #- errcheck
     - errchkjson
     - errname
     - errorlint
     - exhaustive
-    - exhaustruct
-    - exportloopref
+    #- exhaustruct
     - fatcontext
     - forbidigo
     - forcetypeassert
@@ -56,7 +56,7 @@ linters:
     - ineffassign
     - interfacebloat
     - intrange
-    - ireturn
+    #- ireturn
     - lll
     - loggercheck
     - maintidx
@@ -111,13 +111,13 @@ linters:
 linters-settings:
   dupl:
     threshold: 100
-  #errcheck:
-  #  check-type-assertions: true
-  #  check-blank: true
-  #  exclude-functions:
-  #    - io.ReadFull
-  exhaustive:
-    ignore-enum-types: "hash.Hash"
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+    #exclude-functions:
+    #  - io/ioutil.ReadFile
+    #  - io.Copy(*bytes.Buffer)
+    #  - io.Copy(os.Stdout)
   funlen:
     lines: 100
     statements: 50
@@ -156,6 +156,17 @@ linters-settings:
     simplify: true
   goimports:
     local-prefixes: github.com/bytemare/hash2curve
+  gomnd:
+    checks:
+      - argument
+      - case
+      - condition
+      - operation
+      - return
+      - assign
+  gosec:
+    excludes:
+      - G115
   gosimple:
     checks: [ "all" ]
   govet:
@@ -244,15 +255,17 @@ issues:
   # it can be disabled by `exclude-use-default: false`. To list all
   # excluded by default patterns execute `golangci-lint run --help`
   exclude:
-    - "should have a package comment, unless it's in another file for this package"
+  #- "should have a package comment, unless it's in another file for this package"
+  #- "do not define dynamic errors, use wrapped static errors instead"
+  #- "missing cases in switch of type Group: maxID"
 
-    #exclude-rules:
-    #- path: internal/hash.go
-    #  linters:
-    #    - errcheck
-    #- path: internal/tag/strings.go
-    #  linters:
-    #    - gosec
+  #exclude-rules:
+  #  - path: internal/hash.go
+  #    linters:
+  #      - errcheck
+  #  - path: internal/tag/strings.go
+  #    linters:
+  #      - gosec
 
   max-issues-per-linter: 0
   max-same-issues: 0
@@ -267,4 +280,10 @@ run:
   tests: false
 
 output:
-  formats: github-actions
+  formats:
+    - format: colored-line-number
+      path: stdout
+  sort-results: true
+  sort-order:
+    - file
+  show-stats: true

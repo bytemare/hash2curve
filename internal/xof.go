@@ -25,10 +25,12 @@ func ExpandXOF(ext *hash.ExtendableHash, input, dst []byte, length uint) []byte 
 	}
 
 	dst = VetXofDST(ext, dst)
-	len2o := I2osp(length, 2)
-	dstLen2o := I2osp(uint(len(dst)), 1)
+	len2o := I2OSP(length, 2)
+	dstLen2o := I2OSP(uint(len(dst)), 1)
 
-	return ext.Hash(length, input, len2o, dst, dstLen2o)
+	ext.SetOutputSize(int(length))
+
+	return ext.Hash(input, len2o, dst, dstLen2o)
 }
 
 // VetXofDST computes a shorter tag for dst if the tag length exceeds 255 bytes.
@@ -38,17 +40,18 @@ func VetXofDST(x *hash.ExtendableHash, dst []byte) []byte {
 	}
 
 	size := checkXOFSecurityLevel(x)
+	x.SetOutputSize(size)
 
-	return x.Hash(size, []byte(dstLongPrefix), dst)
+	return x.Hash([]byte(dstLongPrefix), dst)
 }
 
 // checkXOFSecurityLength return the desired output length to shorten the DST, or panics if the XOFs security level is
 // too high for the expected output length.
-func checkXOFSecurityLevel(x *hash.ExtendableHash) uint {
+func checkXOFSecurityLevel(x *hash.ExtendableHash) int {
 	k := x.Algorithm().SecurityLevel()
 
-	size := uint(math.Ceil(float64(2*k) / float64(8)))
-	if size > uint(x.Size()*8) {
+	size := int(math.Ceil(float64(2*k) / float64(8)))
+	if size > x.Size()*8 {
 		panic(errXOFHighOutput)
 	}
 
