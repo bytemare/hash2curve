@@ -11,7 +11,7 @@ package internal
 import (
 	"math/big"
 
-	"github.com/bytemare/hash2curve/internal/field"
+	"github.com/bytemare/hash2curve/nist/internal/field"
 )
 
 // MapToCurveSSWU implements the Simplified SWU method for Weierstrass curves for any base field.
