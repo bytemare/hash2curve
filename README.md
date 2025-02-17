@@ -14,14 +14,14 @@ It exposed a minimal API so you don't have to worry about the parameters.
 The following table shows supported groups with hash-to-curve capability and links each one to the underlying
 implementations:
 
-| Curve        | Backend                                |
-|--------------|----------------------------------------|
-| Ristretto255 | github.com/gtank/ristretto255          |
-| P-256        | filippo.io/nistec                      |
-| P-384        | filippo.io/nistec                      |
-| P-521        | filippo.io/nistec                      |
-| Edwards25519 | filippo.io/edwards25519                |
-| Secp256k1    | https://github.com/mit-plv/fiat-crypto |
+| Curve        | Backend                       |
+|--------------|-------------------------------|
+| Ristretto255 | github.com/gtank/ristretto255 |
+| P-256        | filippo.io/nistec             |
+| P-384        | filippo.io/nistec             |
+| P-521        | filippo.io/nistec             |
+| Edwards25519 | filippo.io/edwards25519       |
+| Secp256k1    | github.com/bytemare/secp256k1 |
 
 #### What is hash2curve?
 
