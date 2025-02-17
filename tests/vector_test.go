@@ -27,7 +27,9 @@ import (
 
 	"github.com/bytemare/hash2curve"
 	edwards25520 "github.com/bytemare/hash2curve/edwards25519"
-	"github.com/bytemare/hash2curve/nist"
+	"github.com/bytemare/hash2curve/nist/p256"
+	"github.com/bytemare/hash2curve/nist/p384"
+	"github.com/bytemare/hash2curve/nist/p521"
 	"github.com/bytemare/hash2curve/secp256k1"
 )
 
@@ -182,8 +184,8 @@ func (v *h2cVector) run(t *testing.T) {
 		if mode == "RO_" {
 			switch v.Curve {
 			case "NIST P-256":
-				h2c = nist.H2CP256
-				p := nist.HashToP256([]byte(v.Msg), []byte(v.Dst))
+				h2c = p256.H2CP256
+				p := p256.HashToCurve([]byte(v.Msg), []byte(v.Dst))
 				b = p.BytesCompressed()
 				u = hash2curve.HashToFieldXMD(
 					crypto.SHA256,
@@ -195,8 +197,8 @@ func (v *h2cVector) run(t *testing.T) {
 					primeP256,
 				)
 			case "NIST P-384":
-				h2c = nist.H2CP384
-				p := nist.HashToP384([]byte(v.Msg), []byte(v.Dst))
+				h2c = p384.H2CP384
+				p := p384.HashToCurve([]byte(v.Msg), []byte(v.Dst))
 				b = p.BytesCompressed()
 				u = hash2curve.HashToFieldXMD(
 					crypto.SHA384,
@@ -208,8 +210,8 @@ func (v *h2cVector) run(t *testing.T) {
 					primeP384,
 				)
 			case "NIST P-521":
-				h2c = nist.H2CP521
-				p := nist.HashToP521([]byte(v.Msg), []byte(v.Dst))
+				h2c = p521.H2CP521
+				p := p521.HashToCurve([]byte(v.Msg), []byte(v.Dst))
 				b = p.BytesCompressed()
 				u = hash2curve.HashToFieldXMD(
 					crypto.SHA512,
@@ -228,18 +230,18 @@ func (v *h2cVector) run(t *testing.T) {
 		} else {
 			switch v.Curve {
 			case "NIST P-256":
-				e2c = nist.E2CP256
-				p := nist.EncodeToP256([]byte(v.Msg), []byte(v.Dst))
+				e2c = p256.E2CP256
+				p := p256.EncodeToCurve([]byte(v.Msg), []byte(v.Dst))
 				b = p.BytesCompressed()
 				u = hash2curve.HashToFieldXMD(crypto.SHA256, []byte(v.Msg), []byte(v.Dst), 1, 1, p256SecLength, primeP256)
 			case "NIST P-384":
-				e2c = nist.E2CP384
-				p := nist.EncodeToP384([]byte(v.Msg), []byte(v.Dst))
+				e2c = p384.E2CP384
+				p := p384.EncodeToCurve([]byte(v.Msg), []byte(v.Dst))
 				b = p.BytesCompressed()
 				u = hash2curve.HashToFieldXMD(crypto.SHA384, []byte(v.Msg), []byte(v.Dst), 1, 1, p384SecLength, primeP384)
 			case "NIST P-521":
-				e2c = nist.E2CP521
-				p := nist.EncodeToP521([]byte(v.Msg), []byte(v.Dst))
+				e2c = p521.E2CP521
+				p := p521.EncodeToCurve([]byte(v.Msg), []byte(v.Dst))
 				b = p.BytesCompressed()
 				u = hash2curve.HashToFieldXMD(crypto.SHA512, []byte(v.Msg), []byte(v.Dst), 1, 1, p521SecLength, primeP521)
 			}
@@ -278,7 +280,7 @@ func (v *h2cVector) run(t *testing.T) {
 			}
 
 			p := secp256k1.HashToCurve([]byte(v.Msg), []byte(v.Dst))
-			b = p.Bytes()
+			b = p.Encode()
 			u = hash2curve.HashToFieldXMD(crypto.SHA256, []byte(v.Msg), []byte(v.Dst), 2, 1, 48, primeSecp256k1)
 		} else {
 			if v.Ciphersuite != secp256k1.E2C {
@@ -286,7 +288,7 @@ func (v *h2cVector) run(t *testing.T) {
 			}
 
 			p := secp256k1.EncodeToCurve([]byte(v.Msg), []byte(v.Dst))
-			b = p.Bytes()
+			b = p.Encode()
 			u = hash2curve.HashToFieldXMD(crypto.SHA256, []byte(v.Msg), []byte(v.Dst), 1, 1, 48, primeSecp256k1)
 		}
 	default:
