@@ -1,5 +1,5 @@
 # Hash To Curve
-[![hash2curve](https://github.com/bytemare/hash2curve/actions/workflows/code-scan.yml/badge.svg)](https://github.com/bytemare/hash2curve/actions/workflows/code-scan.yml)
+[![hash2curve](https://github.com/bytemare/hash2curve/actions/workflows/code-scan.yml/badge.svg)](https://github.com/bytemare/hash2curve/actions/workflows/wf-analysis.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/bytemare/hash2curve.svg)](https://pkg.go.dev/github.com/bytemare/hash2curve)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/bytemare/hash2curve/badge)](https://securityscorecards.dev/viewer/?uri=github.com/bytemare/hash2curve)
 [![codecov](https://codecov.io/gh/bytemare/hash2curve/branch/main/graph/badge.svg?token=5bQfB0OctA)](https://codecov.io/gh/bytemare/hash2curve)
