@@ -17,8 +17,6 @@ import (
 	"github.com/bytemare/hash2curve/nist/internal/field"
 )
 
-var nistWa = big.NewInt(-3)
-
 type nistECPoint[point any] interface {
 	Add(p1, p2 point) point
 	Bytes() []byte
@@ -42,10 +40,10 @@ type NistCurve[point nistECPoint[point]] struct {
 
 // SetMapping sets the curve's parameters for hash-to-curve.
 func (c *NistCurve[point]) SetMapping(hash crypto.Hash, b *big.Int, z int, secLength uint) {
-	c.mapping.Hash = hash
-	c.mapping.SecLength = secLength
+	c.Hash = hash
+	c.SecLength = secLength
 	c.b = *b
-	c.mapping.z = *big.NewInt(int64(z))
+	c.z = *big.NewInt(int64(z))
 }
 
 // SetCurveParams sets the curve's field and utility function for a new point.
@@ -73,15 +71,11 @@ func (c *NistCurve[point]) HashXMD(input, dst []byte) point {
 }
 
 func (c *NistCurve[point]) map2curve(fe *big.Int) point {
+	nistWa := big.NewInt(-3)
 	x, y := MapToCurveSSWU(&c.field, nistWa, &c.b, &c.z, fe)
+
 	return c.affineToPoint(x, y)
 }
-
-var (
-	decompressed256 = [65]byte{0x04}
-	decompressed384 = [97]byte{0x04}
-	decompressed521 = [133]byte{0x04}
-)
 
 func (c *NistCurve[point]) affineToPoint(pxc, pyc *big.Int) point {
 	var decompressed []byte
@@ -89,16 +83,18 @@ func (c *NistCurve[point]) affineToPoint(pxc, pyc *big.Int) point {
 	byteLen := c.field.ByteLen()
 	switch byteLen {
 	case 32:
+		decompressed256 := [65]byte{0x04}
 		decompressed = decompressed256[:]
 	case 48:
+		decompressed384 := [97]byte{0x04}
 		decompressed = decompressed384[:]
 	case 66:
+		decompressed521 := [133]byte{0x04}
 		decompressed = decompressed521[:]
 	default:
 		panic("invalid byte length")
 	}
 
-	decompressed[0] = 0x04
 	pxc.FillBytes(decompressed[1 : 1+byteLen])
 	pyc.FillBytes(decompressed[1+byteLen:])
 

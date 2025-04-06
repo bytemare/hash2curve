@@ -33,7 +33,7 @@ const (
 // HashToCurve implements hash-to-curve mapping to Edwards25519 of input with dst.
 // The DST must not be empty or nil, and is recommended to be longer than 16 bytes.
 func HashToCurve(input, dst []byte) *edwards25519.Point {
-	u := hash2curve.HashToFieldXMD(crypto.SHA512, input, dst, 2, 1, 48, fieldPrime)
+	u := hash2curve.HashToFieldXMD(crypto.SHA512, input, dst, 2, 1, 48, fieldPrime())
 	q0 := element(adjust(u[0].Bytes()))
 	q1 := element(adjust(u[1].Bytes()))
 	p0 := Elligator2Edwards(q0)
@@ -47,7 +47,7 @@ func HashToCurve(input, dst []byte) *edwards25519.Point {
 // EncodeToCurve implements encode-to-curve mapping to Edwards25519 of input with dst.
 // The DST must not be empty or nil, and is recommended to be longer than 16 bytes.
 func EncodeToCurve(input, dst []byte) *edwards25519.Point {
-	q := hash2curve.HashToFieldXMD(crypto.SHA512, input, dst, 1, 1, 48, fieldPrime)
+	q := hash2curve.HashToFieldXMD(crypto.SHA512, input, dst, 1, 1, 48, fieldPrime())
 	b := adjust(q[0].Bytes())
 	p0 := Elligator2Edwards(element(b))
 	p0.MultByCofactor(p0)
@@ -58,6 +58,12 @@ func EncodeToCurve(input, dst []byte) *edwards25519.Point {
 // HashToScalar returns a safe mapping of the arbitrary input to a scalar for the Edwards25519 group.
 // The DST must not be empty or nil, and is recommended to be longer than 16 bytes.
 func HashToScalar(input, dst []byte) *edwards25519.Scalar {
+	orderBytes := []byte{
+		237, 211, 245, 92, 26, 99, 18, 88, 214, 156, 247, 162, 222, 249, 222, 20,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16,
+	}
+	order := new(big.Int).SetBytes(orderBytes)
+
 	sc := hash2curve.HashToFieldXMD(crypto.SHA512, input, dst, 1, 1, 48, order)
 	b := adjust(sc[0].Bytes())
 
@@ -69,34 +75,18 @@ func HashToScalar(input, dst []byte) *edwards25519.Scalar {
 	return s
 }
 
-var (
-	orderBytes = []byte{
-		237, 211, 245, 92, 26, 99, 18, 88, 214, 156, 247, 162, 222, 249, 222, 20,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16,
-	}
-	order = new(big.Int).SetBytes(orderBytes)
-
+// fieldPrime returns the prime 2^255 - 19 for the field of elements.
+func fieldPrime() *big.Int {
 	// p25519 is the prime 2^255 - 19 for the field.
 	// = 0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffed.
 	// = 57896044618658097711785492504343953926634992332820282019728792003956564819949.
-	p25519 = []byte{
+	p25519 := []byte{
 		127, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
 		255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 237,
 	}
-	fieldPrime = new(big.Int).SetBytes(p25519)
-	a, _       = fe().SetBytes([]byte{
-		6, 109, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	})
-	invsqrtD, _ = fe().SetBytes([]byte{
-		6, 126, 69, 255, 170, 4, 110, 204, 130, 26, 125, 75, 209, 211, 161, 197,
-		126, 79, 252, 3, 220, 8, 123, 210, 187, 6, 160, 96, 244, 237, 38, 15,
-	})
-	minA   = fe().Negate(a)
-	zero   = fe().Zero()
-	one    = fe().One()
-	minOne = fe().Negate(one)
-	two    = fe().Add(one, one)
-)
+
+	return new(big.Int).SetBytes(p25519)
+}
 
 func fe() *field.Element {
 	return new(field.Element)
@@ -142,10 +132,19 @@ func Elligator2Edwards(e *field.Element) *edwards25519.Point {
 
 // Elligator2Montgomery implements the Elligator2 mapping to Curve25519.
 func Elligator2Montgomery(e *field.Element) (x, y *field.Element) {
-	t1 := fe().Square(e)   // u^2
-	t1.Multiply(t1, two)   // t1 = 2u^2
-	e1 := t1.Equal(minOne) //
-	t1.Swap(zero, e1)      // if 2u^2 == -1, t1 = 0
+	one := fe().One()
+	a := element([]byte{
+		6, 109, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	})
+
+	two := fe().Add(one, one)
+	minA := fe().Negate(a)
+	minOne := fe().Negate(one)
+
+	t1 := fe().Square(e)     // u^2
+	t1.Multiply(t1, two)     // t1 = 2u^2
+	e1 := t1.Equal(minOne)   //
+	t1.Swap(fe().Zero(), e1) // if 2u^2 == -1, t1 = 0
 
 	x1 := fe().Add(t1, one) // t1 + 1
 	x1.Invert(x1)           // 1 / (t1 + 1)
@@ -193,17 +192,23 @@ func AffineToEdwards(x, y *field.Element) *edwards25519.Point {
 
 // MontgomeryToEdwards lifts a Curve25519 point to its Edwards25519 equivalent.
 func MontgomeryToEdwards(u, v *field.Element) (x, y *field.Element) {
+	invsqrtD := element([]byte{
+		6, 126, 69, 255, 170, 4, 110, 204, 130, 26, 125, 75, 209, 211, 161, 197,
+		126, 79, 252, 3, 220, 8, 123, 210, 187, 6, 160, 96, 244, 237, 38, 15,
+	})
+
 	x = fe().Invert(v)
 	x.Multiply(x, u)
 	x.Multiply(x, invsqrtD)
 
 	y = MontgomeryUToEdwardsY(u)
 
-	return
+	return x, y
 }
 
 // MontgomeryUToEdwardsY transforms a Curve25519 x (or u) coordinate to an Edwards25519 y coordinate.
 func MontgomeryUToEdwardsY(u *field.Element) *field.Element {
+	one := fe().One()
 	u1 := fe().Subtract(u, one)
 	u2 := fe().Add(u, one)
 
