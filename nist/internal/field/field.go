@@ -47,12 +47,7 @@ func NewField(prime *big.Int) Field {
 	}
 }
 
-// Zero returns the zero big.Int of the finite Field.
-func (f Field) Zero() *big.Int {
-	return big.NewInt(0)
-}
-
-// One returns one big.Int of the finite Field.
+// One returns a big.Int one of the finite Field.
 func (f Field) One() *big.Int {
 	return big.NewInt(1)
 }
