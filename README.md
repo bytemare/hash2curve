@@ -29,8 +29,6 @@ implementations:
 > (or element in a group), therefore benefiting from interesting mathematical properties very useful in cryptographic
 > protocols, like CPace, VOPRF, and OPAQUE.
 
-#### References
-
 ## Documentation [![Go Reference](https://pkg.go.dev/badge/github.com/bytemare/hash2curve.svg)](https://pkg.go.dev/github.com/bytemare/hash2curve)
 
 You can find the documentation and usage examples in [the package doc](https://pkg.go.dev/github.com/bytemare/hash2curve).
