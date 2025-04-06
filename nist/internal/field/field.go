@@ -13,11 +13,6 @@ import (
 	"math/big"
 )
 
-var (
-	zero = big.NewInt(0)
-	one  = big.NewInt(1)
-)
-
 // Field represents a Galois Field.
 type Field struct {
 	order       *big.Int
@@ -52,14 +47,9 @@ func NewField(prime *big.Int) Field {
 	}
 }
 
-// Zero returns the zero big.Int of the finite Field.
-func (f Field) Zero() *big.Int {
-	return zero
-}
-
-// One returns one big.Int of the finite Field.
+// One returns a big.Int one of the finite Field.
 func (f Field) One() *big.Int {
-	return one
+	return big.NewInt(1)
 }
 
 // Order returns the size of the Field.

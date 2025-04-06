@@ -26,11 +26,12 @@ import (
 	"filippo.io/edwards25519/field"
 
 	"github.com/bytemare/hash2curve"
-	edwards25520 "github.com/bytemare/hash2curve/edwards25519"
 	"github.com/bytemare/hash2curve/nist/p256"
 	"github.com/bytemare/hash2curve/nist/p384"
 	"github.com/bytemare/hash2curve/nist/p521"
 	"github.com/bytemare/hash2curve/secp256k1"
+
+	ed "github.com/bytemare/hash2curve/edwards25519"
 )
 
 const (
@@ -255,19 +256,19 @@ func (v *h2cVector) run(t *testing.T) {
 		edPoint := vectorToEdwards25519(t, v.P.X, v.P.Y)
 		expected = edPoint.Bytes()
 		if mode == "RO_" {
-			if v.Ciphersuite != edwards25520.H2C {
+			if v.Ciphersuite != ed.H2C {
 				t.Fatal("unexpected h2c")
 			}
 
-			p := edwards25520.HashToCurve([]byte(v.Msg), []byte(v.Dst))
+			p := ed.HashToCurve([]byte(v.Msg), []byte(v.Dst))
 			b = p.Bytes()
 			u = hash2curve.HashToFieldXMD(crypto.SHA512, []byte(v.Msg), []byte(v.Dst), 2, 1, 48, prime25519)
 		} else {
-			if v.Ciphersuite != edwards25520.E2C {
+			if v.Ciphersuite != ed.E2C {
 				t.Fatal("unexpected e2c")
 			}
 
-			p := edwards25520.EncodeToCurve([]byte(v.Msg), []byte(v.Dst))
+			p := ed.EncodeToCurve([]byte(v.Msg), []byte(v.Dst))
 			b = p.Bytes()
 			u = hash2curve.HashToFieldXMD(crypto.SHA512, []byte(v.Msg), []byte(v.Dst), 1, 1, 48, prime25519)
 		}

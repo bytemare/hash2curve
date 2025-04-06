@@ -17,6 +17,7 @@ import (
 // MapToCurveSSWU implements the Simplified SWU method for Weierstrass curves for any base field.
 func MapToCurveSSWU(fp *field.Field, a, b, z, fe *big.Int) (x, y *big.Int) {
 	var tv1, tv2, tv3, tv4, tv5, tv6, _y1 big.Int
+
 	x, y = new(big.Int), new(big.Int)
 
 	fp.Square(&tv1, fe)          //    1.  tv1 = u^2
@@ -46,7 +47,7 @@ func MapToCurveSSWU(fp *field.Field, a, b, z, fe *big.Int) (x, y *big.Int) {
 	e1 := fp.Sgn0(fe) == fp.Sgn0(y)                  //    23.  e1 = sgn0(u) == sgn0(y)
 	fp.CondMov(y, fp.Neg(&big.Int{}, y), y, e1)      //    24.   y = CMOV(-y, y, e1)
 	fp.Inv(&tv4, &tv4)                               //    25.   1 / tv4
-	fp.Mul(x, x, &tv4)                               //	 26.   x = x / tv4
+	fp.Mul(x, x, &tv4)                               //	   26.   x = x / tv4
 
 	return x, y
 }
