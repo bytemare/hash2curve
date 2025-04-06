@@ -2,7 +2,7 @@ module github.com/bytemare/hash2curve
 
 go 1.24.0
 
-toolchain go1.24.1
+toolchain go1.24.2
 
 require (
 	filippo.io/edwards25519 v1.1.0
