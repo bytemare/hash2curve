@@ -18,7 +18,7 @@ type Field struct {
 	order       *big.Int
 	pMinus1div2 *big.Int // used in IsSquare
 	pMinus2     *big.Int // used for Field big.Int inversion
-	exp         *big.Int
+	exp         *big.Int // (p + 1) / 4
 	byteLen     int
 }
 
@@ -137,13 +137,10 @@ func (f Field) Sgn0(x *big.Int) uint {
 	return x.Bit(0)
 }
 
-func (f Field) sqrt3mod4(res, e *big.Int) *big.Int {
-	return f.Exponent(res, e, f.exp)
-}
-
 // SquareRoot sets res to a square root of e mod the field's order, if such a square root exists.
 func (f Field) SquareRoot(res, e *big.Int) *big.Int {
-	return f.sqrt3mod4(res, e)
+	// sqrt3mod4
+	return f.Exponent(res, e, f.exp)
 }
 
 // SqrtRatio res result to the square root of (e/v), and indicates whether (e/v) is a square.
