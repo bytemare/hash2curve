@@ -3,7 +3,7 @@ module github.com/bytemare/hash2curve
 go 1.24.2
 
 require (
-	filippo.io/edwards25519 v1.1.0
+	filippo.io/edwards25519 v1.2.0
 	filippo.io/nistec v0.0.3
 	github.com/bytemare/hash v0.5.2
 	github.com/bytemare/secp256k1 v0.2.2
