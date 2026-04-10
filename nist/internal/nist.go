@@ -17,7 +17,7 @@ import (
 	"github.com/bytemare/hash2curve/nist/internal/field"
 )
 
-type nistECPoint[point any] interface {
+type NistECPoint[point any] interface {
 	Add(p1, p2 point) point
 	Bytes() []byte
 	SetBytes(b []byte) (point, error)
@@ -31,7 +31,7 @@ type mapping struct {
 }
 
 // NistCurve defines the core characteristics of a NIST curve and its prime-order group.
-type NistCurve[point nistECPoint[point]] struct {
+type NistCurve[point NistECPoint[point]] struct {
 	GroupOrder big.Int
 	field      field.Field
 	newPoint   func() point
@@ -53,7 +53,7 @@ func (c *NistCurve[point]) SetCurveParams(prime *big.Int, newPoint func() point)
 }
 
 // EncodeXMD maps input and dst onto a point on the curve.
-func (c *NistCurve[point]) EncodeXMD(input, dst []byte) point {
+func (c *NistCurve[point]) EncodeXMD(input, dst []byte) NistECPoint[point] {
 	u := hash2curve.HashToFieldXMD(c.Hash, input, dst, 1, 1, c.SecLength, c.field.Order())
 	q := c.map2curve(u[0])
 	// We can save cofactor clearing because it is 1.
@@ -61,23 +61,23 @@ func (c *NistCurve[point]) EncodeXMD(input, dst []byte) point {
 }
 
 // HashXMD maps input and dst onto a point on the curve.
-func (c *NistCurve[point]) HashXMD(input, dst []byte) point {
+func (c *NistCurve[point]) HashXMD(input, dst []byte) NistECPoint[point] {
 	u := hash2curve.HashToFieldXMD(c.Hash, input, dst, 2, 1, c.SecLength, c.field.Order())
-	q0 := c.map2curve(u[0])
-	q1 := c.map2curve(u[1])
+	q0 := c.map2curve(u[0]).(point) //nolint:forcetypeassert // Is instantiated with a point.
+	q1 := c.map2curve(u[1]).(point) //nolint:forcetypeassert // Is instantiated with a point.
 
 	// We can save cofactor clearing because it is 1.
 	return q0.Add(q0, q1)
 }
 
-func (c *NistCurve[point]) map2curve(fe *big.Int) point {
+func (c *NistCurve[point]) map2curve(fe *big.Int) NistECPoint[point] {
 	nistWa := big.NewInt(-3)
 	x, y := MapToCurveSSWU(&c.field, nistWa, &c.b, &c.z, fe)
 
 	return c.affineToPoint(x, y)
 }
 
-func (c *NistCurve[point]) affineToPoint(pxc, pyc *big.Int) point {
+func (c *NistCurve[point]) affineToPoint(pxc, pyc *big.Int) NistECPoint[point] {
 	var decompressed []byte
 
 	byteLen := c.field.ByteLen()
