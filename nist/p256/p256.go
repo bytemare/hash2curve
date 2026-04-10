@@ -37,14 +37,14 @@ var (
 // The DST must not be empty or nil, and is recommended to be longer than 16 bytes.
 func HashToCurve(input, dst []byte) *nistec.P256Point {
 	initOnceP256.Do(initP256)
-	return p256.HashXMD(input, dst)
+	return p256.HashXMD(input, dst).(*nistec.P256Point) //nolint:forcetypeassert // Is instantiated with a P256Point.
 }
 
 // EncodeToCurve implements encode-to-curve mapping to P256 of input with dst.
 // The DST must not be empty or nil, and is recommended to be longer than 16 bytes.
 func EncodeToCurve(input, dst []byte) *nistec.P256Point {
 	initOnceP256.Do(initP256)
-	return p256.EncodeXMD(input, dst)
+	return p256.EncodeXMD(input, dst).(*nistec.P256Point) //nolint:forcetypeassert // Is instantiated with a P256Point.
 }
 
 // HashToScalar returns a safe mapping of the arbitrary input to a scalar for the prime-order group of P256.

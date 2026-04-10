@@ -12,7 +12,6 @@ package edwards25519
 
 import (
 	"crypto"
-	"math/big"
 
 	"filippo.io/edwards25519"
 	"filippo.io/edwards25519/field"
@@ -26,16 +25,14 @@ const (
 
 	// E2C represents the encode-to-curve string identifier.
 	E2C = "edwards25519_XMD:SHA-512_ELL2_NU_"
-
-	canonicalEncodingLength = 32
 )
 
 // HashToCurve implements hash-to-curve mapping to Edwards25519 of input with dst.
 // The DST must not be empty or nil, and is recommended to be longer than 16 bytes.
 func HashToCurve(input, dst []byte) *edwards25519.Point {
-	u := hash2curve.HashToFieldXMD(crypto.SHA512, input, dst, 2, 1, 48, fieldPrime())
-	q0 := element(adjust(u[0].Bytes()))
-	q1 := element(adjust(u[1].Bytes()))
+	uniform := hash2curve.ExpandXMD(crypto.SHA512, input, dst, uint(2*1*48))
+	q0, _ := new(field.Element).SetWideBytes(expandAndReverse64(uniform[0:48])) //nolint:errcheck // always succeeds
+	q1, _ := new(field.Element).SetWideBytes(expandAndReverse64(uniform[48:]))  //nolint:errcheck // always succeeds
 	p0 := Elligator2Edwards(q0)
 	p1 := Elligator2Edwards(q1)
 	p0.Add(p0, p1)
@@ -47,9 +44,10 @@ func HashToCurve(input, dst []byte) *edwards25519.Point {
 // EncodeToCurve implements encode-to-curve mapping to Edwards25519 of input with dst.
 // The DST must not be empty or nil, and is recommended to be longer than 16 bytes.
 func EncodeToCurve(input, dst []byte) *edwards25519.Point {
-	q := hash2curve.HashToFieldXMD(crypto.SHA512, input, dst, 1, 1, 48, fieldPrime())
-	b := adjust(q[0].Bytes())
-	p0 := Elligator2Edwards(element(b))
+	uniform := hash2curve.ExpandXMD(crypto.SHA512, input, dst, uint(1*1*48))
+	u1 := uniform[0:48]
+	b, _ := new(field.Element).SetWideBytes(expandAndReverse64(u1)) //nolint:errcheck // always succeeds
+	p0 := Elligator2Edwards(b)
 	p0.MultByCofactor(p0)
 
 	return p0
@@ -58,68 +56,26 @@ func EncodeToCurve(input, dst []byte) *edwards25519.Point {
 // HashToScalar returns a safe mapping of the arbitrary input to a scalar for the Edwards25519 group.
 // The DST must not be empty or nil, and is recommended to be longer than 16 bytes.
 func HashToScalar(input, dst []byte) *edwards25519.Scalar {
-	orderBytes := []byte{
-		237, 211, 245, 92, 26, 99, 18, 88, 214, 156, 247, 162, 222, 249, 222, 20,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16,
-	}
-	order := new(big.Int).SetBytes(orderBytes)
-
-	sc := hash2curve.HashToFieldXMD(crypto.SHA512, input, dst, 1, 1, 48, order)
-	b := adjust(sc[0].Bytes())
-
-	s, err := edwards25519.NewScalar().SetCanonicalBytes(b)
-	if err != nil {
-		panic(err)
-	}
+	uniform := hash2curve.ExpandXMD(crypto.SHA512, input, dst, 48)
+	uniform = expandAndReverse64(uniform)
+	s, _ := edwards25519.NewScalar().SetUniformBytes(uniform) //nolint:errcheck // always succeeds
 
 	return s
-}
-
-// fieldPrime returns the prime 2^255 - 19 for the field of elements.
-func fieldPrime() *big.Int {
-	// p25519 is the prime 2^255 - 19 for the field.
-	// = 0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffed.
-	// = 57896044618658097711785492504343953926634992332820282019728792003956564819949.
-	p25519 := []byte{
-		127, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-		255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 237,
-	}
-
-	return new(big.Int).SetBytes(p25519)
 }
 
 func fe() *field.Element {
 	return new(field.Element)
 }
 
-func element(input []byte) *field.Element {
-	e, err := new(field.Element).SetBytes(input)
-	if err != nil {
-		panic(err)
+// expandAndReverse64 returns the reverse of the input and pads with 0s to 64 bytes.
+func expandAndReverse64(in []byte) []byte {
+	// Pre-allocate 64-byte buffer and reverse directly into it.
+	result := make([]byte, 64)
+	for i := range 48 {
+		result[i] = in[47-i]
 	}
 
-	return e
-}
-
-func adjust(in []byte) []byte {
-	// If necessary, build a buffer of right size, so it gets correctly interpreted.
-	if l := canonicalEncodingLength - len(in); l > 0 {
-		buf := make([]byte, l, canonicalEncodingLength)
-		buf = append(buf, in...)
-		in = buf
-	}
-
-	// Reverse, because filippo.io/edwards25519 works in little-endian
-	return reverse(in)
-}
-
-func reverse(b []byte) []byte {
-	l := len(b) - 1
-	for i := range len(b) / 2 {
-		b[i], b[l-i] = b[l-i], b[i]
-	}
-
-	return b
+	return result
 }
 
 // Elligator2Edwards maps the field element to a point on Edwards25519.
@@ -132,13 +88,12 @@ func Elligator2Edwards(e *field.Element) *edwards25519.Point {
 
 // Elligator2Montgomery implements the Elligator2 mapping to Curve25519.
 func Elligator2Montgomery(e *field.Element) (x, y *field.Element) {
-	one := fe().One()
-	a := element([]byte{
+	a, _ := fe().SetBytes([]byte{ //nolint:errcheck // always succeeds
 		6, 109, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	})
-
-	two := fe().Add(one, one)
 	minA := fe().Negate(a)
+	one := fe().One()
+	two := fe().Add(one, one)
 	minOne := fe().Negate(one)
 
 	t1 := fe().Square(e)     // u^2
@@ -192,7 +147,7 @@ func AffineToEdwards(x, y *field.Element) *edwards25519.Point {
 
 // MontgomeryToEdwards lifts a Curve25519 point to its Edwards25519 equivalent.
 func MontgomeryToEdwards(u, v *field.Element) (x, y *field.Element) {
-	invsqrtD := element([]byte{
+	invsqrtD, _ := new(field.Element).SetBytes([]byte{ //nolint:errcheck // always succeeds
 		6, 126, 69, 255, 170, 4, 110, 204, 130, 26, 125, 75, 209, 211, 161, 197,
 		126, 79, 252, 3, 220, 8, 123, 210, 187, 6, 160, 96, 244, 237, 38, 15,
 	})

@@ -22,7 +22,9 @@ import (
 // The DST must not be empty or nil, and is recommended to be longer than 16 bytes.
 func HashToGroup(input, dst []byte) *ristretto255.Element {
 	uniform := hash2curve.ExpandXMD(crypto.SHA512, input, dst, 64)
-	return ristretto255.NewElement().FromUniformBytes(uniform)
+	e, _ := ristretto255.NewIdentityElement().SetUniformBytes(uniform) //nolint:errcheck // always succeeds
+
+	return e
 }
 
 // EncodeToGroup returns a non-uniform mapping of the arbitrary input to an Element in the Ristretto255 group.
@@ -35,5 +37,7 @@ func EncodeToGroup(input, dst []byte) *ristretto255.Element {
 // The DST must not be empty or nil, and is recommended to be longer than 16 bytes.
 func HashToScalar(input, dst []byte) *ristretto255.Scalar {
 	uniform := hash2curve.ExpandXMD(crypto.SHA512, input, dst, 64)
-	return ristretto255.NewScalar().FromUniformBytes(uniform)
+	s, _ := ristretto255.NewScalar().SetUniformBytes(uniform) //nolint:errcheck // always succeeds
+
+	return s
 }
